@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Protocol — Escape the Broke Cycle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #030303;
+            --accent: #00ff88;
+            --accent-muted: rgba(0, 255, 136, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --grid-color: rgba(255, 255, 255, 0.03);
+            --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Grid Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow {
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--accent-muted) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+        /* Navigation */
+        nav {
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(3, 3, 3, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0; z-index: 100;
+        }
+
+        .logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; }
+        .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+
+        /* Hero */
+        header { padding: 8rem 0 4rem; text-align: center; position: relative; }
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            background: linear-gradient(180deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .tagline { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; display: block; }
+        .subtext { color: var(--text-dim); font-size: 1.25rem; max-width: 600px; margin: 0 auto 2.5rem; }
+
+        .cta-btn {
+            background: var(--text-main); color: var(--bg);
+            padding: 1rem 2rem; border-radius: 8px;
+            text-decoration: none; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            transition: var(--transition); border: none; cursor: pointer;
+            font-family: inherit;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2);
+            background: var(--accent);
+        }
+
+        .cta-btn.secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--border);
+        }
+
+        /* New Sections Styles */
+        section { padding: 8rem 0; }
+        .section-title { text-align: center; margin-bottom: 4rem; }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 1rem; letter-spacing: -1px; }
+        .section-title p { color: var(--text-dim); max-width: 600px; margin: 0 auto; }
+
+        /* Problem Grid */
+        .problem-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        /* Allocation System */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .method-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .method-item h4 { font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .method-item span { color: var(--text-dim); font-size: 0.9rem; }
+
+        /* Screenshot Gallery */
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+        .screenshot-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .screenshot-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 255, 136, 0.15);
+        }
+        .screenshot-img-wrapper {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #0a0a0a;
+            position: relative;
+        }
+        .screenshot-img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .screenshot-card:hover .screenshot-img-wrapper img {
+            transform: scale(1.03);
+        }
+        .screenshot-info {
+            text-align: left;
+        }
+        .screenshot-info strong {
+            display: block;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+        .screenshot-info p {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            margin: 0;
+        }
+
+        /* Features/Benefits */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 16px;
+        }
+        .feature-card i { color: var(--accent); margin-bottom: 1rem; }
+
+        /* Roadmap */
+        .roadmap-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 4rem;
+        }
+        .roadmap-container::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+        .roadmap-step {
+            position: relative;
+            z-index: 2;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 30%;
+        }
+        .roadmap-step.active { border-color: var(--accent); }
+        .roadmap-step.active .v-tag { background: var(--accent); color: var(--bg); }
+        .v-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--border);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Creator */
+        .creator-section {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            background: var(--card-bg);
+            padding: 4rem;
+            border-radius: 32px;
+            border: 1px solid var(--border);
+        }
+        .creator-img {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(var(--accent), #0088ff);
+            flex-shrink: 0;
+        }
+
+        /* FAQ */
+        .faq-grid { max-width: 800px; margin: 0 auto; }
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+        }
+        .faq-item h4 { margin-bottom: 0.5rem; color: var(--text-main); }
+        .faq-item p { color: var(--text-dim); font-size: 0.95rem; }
+
+        /* Lead Capture Form */
+        .form-container {
+            max-width: 600px; margin: 4rem auto 0;
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 3rem; border-radius: 24px;
+        }
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        .form-group label {
+            display: block; font-size: 0.85rem; color: var(--text-dim);
+            margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase;
+        }
+        .form-control {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); padding: 1rem;
+            border-radius: 8px; color: white; font-size: 1rem;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .success-message { display: none; text-align: center; padding: 2rem; color: var(--accent); }
+
+        footer { padding: 4rem 0; text-align: center; border-top: 1px solid var(--border); color: var(--text-dim); }
+
+        @media (max-width: 768px) {
+            .method-grid { grid-template-columns: 1fr 1fr; }
+            .screenshot-gallery { grid-template-columns: 1fr; }
+            .roadmap-container { flex-direction: column; gap: 2rem; }
+            .roadmap-container::before { display: none; }
+            .roadmap-step { width: 100%; }
+            .creator-section { flex-direction: column; text-align: center; padding: 2rem; }
+            .problem-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <div class="logo">
+                <div class="logo-dot"></div> MONEY PROTOCOL
+            </div>
+            <a href="https://kamilafaris.gumroad.com/l/xuphle" class="cta-btn" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;">Buy V1 ($12)</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header>
+        <div class="glow" style="top: 0; left: 50%; transform: translateX(-50%);"></div>
+        <div class="container">
+            <span class="tagline reveal">By Kamil Alfaris</span>
+            <h1 class="reveal">Designed for people who <br> want to escape the broke cycle.</h1>
+            <p class="subtext reveal">A minimalist financial system built inside Notion to track income, control spending, and build long-term clarity.</p>
+            <div class="reveal" style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="#buy" class="cta-btn">Get Money Protocol — $12</a>
+                <a href="#method" class="cta-btn secondary">Learn the Method</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Problem -->
+    <section>
+        <div class="container">
+            <div class="problem-card reveal">
+                <div style="flex: 1;">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">The "Invisible Leak"</h2>
+                    <p style="color: var(--text-dim); font-size: 1.1rem;">You work hard for 30 days, payday arrives, and within 10 days, you're wondering where it all went. Most people don't have a money problem—they have a <strong>system problem.</strong></p>
+                    <ul style="margin-top: 1.5rem; color: var(--text-dim); list-style: none; display: grid; gap: 0.5rem;">
+                        <li><i data-lucide="x-circle" size="16" style="color: #ff4444; vertical-align: middle; margin-right: 8px;"></i> No clear allocation of funds</li>
+                        <li><i data-lucide="x-circle" size="16" style="color: #ff4444; vertical-align: middle; margin-right: 8px;"></i> Reactive spending instead of proactive planning</li>
+                        <li><i data-lucide="x-circle" size="16" style="color: #ff4444; vertical-align: middle; margin-right: 8px;"></i> Financial anxiety before every purchase</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; display: flex; justify-content: center;">
+                    <i data-lucide="alert-triangle" size="120" style="opacity: 0.1; color: var(--accent);"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Money Protocol Method -->
+    <section id="method" style="background: rgba(255,255,255,0.01);">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>The Money Protocol Method</h2>
+                <p>Stop guessing. Start allocating. Our system uses a proven 4-pillar philosophy to ensure you cover your needs while building wealth.</p>
+            </div>
+            <div class="method-grid reveal">
+                <div class="method-item">
+                    <h4>25%</h4>
+                    <span>Essentials</span>
+                </div>
+                <div class="method-item">
+                    <h4>50%</h4>
+                    <span>Lifestyle</span>
+                </div>
+                <div class="method-item">
+                    <h4>15%</h4>
+                    <span>Savings</span>
+                </div>
+                <div class="method-item">
+                    <h4>10%</h4>
+                    <span>Investments</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Product Screenshots -->
+    <section>
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>Minimalist. Inside Notion.</h2>
+                <p>A clean digital environment designed for focus and financial control.</p>
+            </div>
+            <div class="screenshot-gallery">
+                <div class="screenshot-card reveal">
+                    <div class="screenshot-img-wrapper">
+                        <img src="https://i.imgur.com/S5ajCbo.png" alt="Main Dashboard Screenshot">
+                    </div>
+                    <div class="screenshot-info">
+                        <strong>Main Dashboard</strong>
+                        <p>Your total financial overview.</p>
+                    </div>
+                </div>
+                <div class="screenshot-card reveal">
+                    <div class="screenshot-img-wrapper">
+                        <img src="https://i.imgur.com/RaNQcmO.png" alt="Transactions Database Screenshot">
+                    </div>
+                    <div class="screenshot-info">
+                        <strong>Transactions Database</strong>
+                        <p>Seamlessly track every dollar.</p>
+                    </div>
+                </div>
+                <div class="screenshot-card reveal">
+                    <div class="screenshot-img-wrapper">
+                        <img src="https://i.imgur.com/UrG1H6S.png" alt="Spending Insights Screenshot">
+                    </div>
+                    <div class="screenshot-info">
+                        <strong>Spending Insights</strong>
+                        <p>Visualized spending categories.</p>
+                    </div>
+                </div>
+                <div class="screenshot-card reveal">
+                    <div class="screenshot-img-wrapper">
+                        <img src="https://i.imgur.com/x8Lpuf1.png" alt="Financial Goals Screenshot">
+                    </div>
+                    <div class="screenshot-info">
+                        <strong>Financial Goals</strong>
+                        <p>Save for what truly matters.</p>
+                    </div>
+                </div>
+                <div class="screenshot-card reveal">
+                    <div class="screenshot-img-wrapper">
+                        <img src="https://i.imgur.com/W9WNDuM.png" alt="Monthly Database Screenshot">
+                    </div>
+                    <div class="screenshot-info">
+                        <strong>Monthly Database</strong>
+                        <p>History of your growth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4 & 5: Features & Benefits -->
+    <section>
+        <div class="container">
+            <div class="grid-3">
+                <div class="feature-card reveal">
+                    <i data-lucide="mouse-pointer-2"></i>
+                    <h3>Track Everything</h3>
+                    <p style="color: var(--text-dim);">One-click transaction logging inside Notion. No more complex spreadsheets.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <i data-lucide="shield-check"></i>
+                    <h3>Control Spending</h3>
+                    <p style="color: var(--text-dim);">Monitor patterns and catch overspending before it ruins your month.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <i data-lucide="trending-up"></i>
+                    <h3>Build Clarity</h3>
+                    <p style="color: var(--text-dim);">Stop living paycheck to paycheck and start seeing your net worth grow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Roadmap -->
+    <section style="background: rgba(0,255,136,0.02);">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>Product Roadmap</h2>
+                <p>Buying V1 today is an investment. Early buyers receive <strong>free lifetime upgrades</strong> to all future versions.</p>
+            </div>
+            <div class="roadmap-container reveal">
+                <div class="roadmap-step active">
+                    <span class="v-tag">AVAILABLE NOW</span>
+                    <h4>V1: Basic</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">Core allocation system, transactions, and monthly summary.</p>
+                </div>
+                <div class="roadmap-step">
+                    <span class="v-tag">COMING SOON</span>
+                    <h4>V2: Pro</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">Savings goals, overspending alerts, and advanced reviews.</p>
+                </div>
+                <div class="roadmap-step">
+                    <span class="v-tag">LATER THIS YEAR</span>
+                    <h4>V3: OS</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">Net worth tracking, asset management, and wealth analytics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: About Creator -->
+    <section>
+        <div class="container">
+            <div class="creator-section reveal">
+                <div class="creator-img"></div>
+                <div>
+                    <h2 style="margin-bottom: 1rem;">Meet the Creator</h2>
+                    <p style="color: var(--text-dim); margin-bottom: 1rem;"><strong>Kamil Alfaris</strong> is a digital creator and builder working at the intersection of AI, design, and the hacking mindset.</p>
+                    <p style="color: var(--text-dim);">He experiments with automation and digital product development to build systems that help modern learners gain an edge in the digital economy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: FAQ -->
+    <section>
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-grid reveal">
+                <div class="faq-item">
+                    <h4>What is Money Protocol?</h4>
+                    <p>It is a minimalist financial framework designed to help you manage your personal economy without the bloat of traditional accounting apps.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Is this a Notion template?</h4>
+                    <p>Yes, it is built entirely in Notion. You can duplicate it to your own workspace instantly after purchase.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Will I receive future upgrades?</h4>
+                    <p>Yes. If you buy Version 1 today for $12, you will get V2 and V3 delivered to your email for free when they launch.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Who is this system for?</h4>
+                    <p>Salary workers, students, and beginners who feel they have no control over their monthly salary.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Capture Form -->
+    <section id="capture">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>Get a Free Financial Checklist</h2>
+                <p>Not ready to buy? Enter your details to get my 5-minute payday checklist.</p>
+            </div>
+            
+            <div class="form-container reveal">
+                <form id="leadForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Approx. Monthly Income</label>
+                        <input type="text" id="income" class="form-control" placeholder="$5,000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Biggest Financial Problem</label>
+                        <textarea id="problem" class="form-control" placeholder="What keeps you up at night?" required></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="cta-btn" style="width: 100%; justify-content: center;">
+                        Send Me the Checklist
+                    </button>
+                </form>
+
+                <div id="successMsg" class="success-message">
+                    <i data-lucide="check-circle" size="48" style="margin-bottom: 1rem;"></i>
+                    <h3>Checklist Sent!</h3>
+                    <p>We've received your details. Check your inbox.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Final CTA -->
+    <section id="buy" style="text-align: center; border-top: 1px solid var(--border);">
+        <div class="container reveal">
+            <h2 style="font-size: 3.5rem; margin-bottom: 2rem;">Ready to escape <br> the broke cycle?</h2>
+            <a href="https://kamilafaris.gumroad.com/l/xuphle" class="cta-btn" style="padding: 1.5rem 3rem; font-size: 1.2rem;">
+                Get Money Protocol for $12
+                <i data-lucide="rocket" size="20"></i>
+            </a>
+            <p style="margin-top: 1.5rem; color: var(--text-dim);">Secure checkout via Gumroad. Instant access.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Money Protocol by Kamil Alfaris. Built for the modern builder.</p>
+        </div>
+    </footer>
+
+    <!-- ElevenLabs Chatbot Widget -->
+    <elevenlabs-convai agent-id="agent_2001kkfyrpnff73tcbg5edhjvfn1"></elevenlabs-convai>
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Reveal Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Form Submission to Make.com Webhook
+        const form = document.getElementById('leadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('successMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Sending...";
+
+            const payload = {
+                Name: document.getElementById('name').value,
+                Email: document.getElementById('email').value,
+                MonthlyIncome: document.getElementById('income').value,
+                Problem: document.getElementById('problem').value,
+                Date: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('https://hook.us2.make.com/uciuiycgvmdgrdswkeeifxurae4wi1gr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    form.style.display = 'none';
+                    successMsg.style.display = 'block';
+                    lucide.createIcons();
+                } else {
+                    throw new Error('Webhook failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an issue. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Send Me the Checklist";
+            }
+        });
+    </script>
+</body>
+</html>
