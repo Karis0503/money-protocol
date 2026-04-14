@@ -1,6 +1,12 @@
+import { AgentMessage } from "@/lib/ai/agents/types";
 import { FinancialState, Insight } from "@/types/domain";
 
-export function runAnalysis(userId: string, state: FinancialState): Insight[] {
+export function runAnalysis(
+  userId: string,
+  state: FinancialState,
+  mailbox: AgentMessage[] = [],
+  memory: string[] = []
+): Insight[] {
   const insights: Insight[] = [];
 
   if (state.monthlyExpense > state.monthlyIncome * 0.8) {
@@ -26,6 +32,22 @@ export function runAnalysis(userId: string, state: FinancialState): Insight[] {
       user_id: userId,
       kind: "prediction",
       content: `Projected monthly expense is ${projected}, exceeding income. You are on track for a deficit.`
+    });
+  }
+
+  if (memory.some((m) => m.toLowerCase().includes("food"))) {
+    insights.push({
+      user_id: userId,
+      kind: "habit",
+      content: "Historical memory confirms recurring food overspending behavior."
+    });
+  }
+
+  if (mailbox.length > 0) {
+    insights.push({
+      user_id: userId,
+      kind: "prediction",
+      content: `Agent coordination active with ${mailbox.length} internal messages this cycle.`
     });
   }
 

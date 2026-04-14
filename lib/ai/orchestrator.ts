@@ -1,73 +1,63 @@
-import { analystAgent } from "@/lib/ai/agents/analyst-agent";
-import { enforcerAgent } from "@/lib/ai/agents/enforcer-agent";
-import { memoryAgent } from "@/lib/ai/agents/memory-agent";
-import { strategistAgent } from "@/lib/ai/agents/strategist-agent";
-import { prioritizeDecisions } from "@/lib/ai/decision-prioritizer";
+import { runAgentNetwork } from "@/lib/ai/agents/agent-broker";
+import { AgentContext } from "@/lib/ai/agents/types";
+import { loadAgentMemory, storeMemoryEntries } from "@/lib/ai/memory-system";
 import { buildFinancialState } from "@/lib/ai/state-builder";
-import { publishAgentMessages } from "@/lib/automation/agent-bus";
 import { supabaseAdmin } from "@/lib/db/supabase";
-import { getUserMemories, upsertMemory } from "@/lib/memory/store";
-import { AgentMessage, Decision, Insight } from "@/types/domain";
-
-const AGENT_ORDER = [analystAgent, strategistAgent, enforcerAgent, memoryAgent];
+import { executeActions } from "@/lib/ai/action-engine";
 
 export async function runMoneyProtocolCycle(userId: string) {
   const state = await buildFinancialState(userId);
-  const memories = await getUserMemories(userId);
+  const memory = await loadAgentMemory(userId);
 
-  const insights: Insight[] = [];
-  const decisions: Decision[] = [];
-  const messages: AgentMessage[] = [];
+  const context: AgentContext = {
+    userId,
+    state,
+    insights: [],
+    decisions: [],
+    memory,
+    mailbox: []
+  };
 
-  for (let loop = 0; loop < 2; loop += 1) {
-    for (const agent of AGENT_ORDER) {
-      const result = agent.run({
-        userId,
-        state,
-        memories,
-        sharedInsights: insights
-      });
-
-      if (result.insights?.length) insights.push(...result.insights);
-      if (result.decisions?.length) decisions.push(...result.decisions);
-      if (result.outboundMessages?.length) {
-        messages.push(
-          ...result.outboundMessages.map((msg) => ({
-            user_id: userId,
-            from_agent: agent.id,
-            to_agent: msg.to,
-            message_type: msg.type,
-            payload: msg.payload
-          }))
-        );
-      }
-    }
-  }
-
-  const prioritizedDecisions = prioritizeDecisions(decisions);
+  const { insights, decisions, warnings, mailbox } = runAgentNetwork(context);
+  const rankedDecisions = decisions.map((decision, index) => ({ ...decision, priority_rank: index + 1 }));
 
   if (insights.length > 0) {
     await supabaseAdmin.from("insights").insert(insights);
   }
 
-  if (prioritizedDecisions.length > 0) {
-    await supabaseAdmin.from("decisions").insert(prioritizedDecisions);
+  if (rankedDecisions.length > 0) {
+    await supabaseAdmin.from("decisions").insert(rankedDecisions);
   }
 
-  await publishAgentMessages(messages);
+  if (mailbox.length > 0) {
+    await supabaseAdmin.from("agent_messages").insert(
+      mailbox.map((message) => ({
+        user_id: userId,
+        from_agent: message.from,
+        to_agent: message.to,
+        topic: message.topic,
+        payload: message.payload
+      }))
+    );
+  }
 
-  const strictModeMentions = messages.filter((m) => m.payload.includes("strict_mode_streak")).length;
-  await upsertMemory({
-    user_id: userId,
-    memory_type: "short_term",
-    key: "strict_mode_streak",
-    value: String(strictModeMentions),
-    score: strictModeMentions >= 3 ? 0.9 : 0.4
-  });
+  await executeActions(userId, rankedDecisions);
+  await storeMemoryEntries(userId, [
+    {
+      key: "last_cycle_summary",
+      value: `Insights=${insights.length}, Decisions=${rankedDecisions.length}, Warnings=${warnings.length}`,
+      source: "orchestrator"
+    },
+    ...(rankedDecisions[0]
+      ? [
+          {
+            key: "top_decision",
+            value: rankedDecisions[0].command,
+            source: "decision_engine"
+          }
+        ]
+      : [])
+  ]);
 
-  const warnings = prioritizedDecisions
-    .filter((d) => d.severity !== "low")
-    .map((d) => `[P${d.priority_score}] ${d.command}: ${d.reason}`);
-
-  return { state, insights, decisions: prioritizedDecisions, warnings, messages };
+  return { state, insights, decisions: rankedDecisions, warnings, mailboxSize: mailbox.length };
 }

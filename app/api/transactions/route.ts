@@ -1,5 +1,4 @@
-import { createActions } from "@/lib/engine/actions";
-import { applyIncomeAllocation, evaluateUser } from "@/lib/engine/runtime";
+import { runMoneyProtocolCycle } from "@/lib/ai/orchestrator";
 import { parseChatTransaction } from "@/lib/core/parser";
 import { supabaseAdmin } from "@/lib/db/supabase";
 import { NextResponse } from "next/server";
@@ -25,11 +24,8 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
-    const allocation = parsed.type === "income" ? await applyIncomeAllocation(userId, parsed.amount) : [];
-    const runtime = await evaluateUser(userId);
-    await createActions(userId, runtime.evaluation);
-
-    return NextResponse.json({ parsed, allocation, ...runtime });
+    const result = await runMoneyProtocolCycle(userId);
+    return NextResponse.json({ parsed, ...result });
   } catch (error) {
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }

@@ -11,19 +11,14 @@ export async function POST(request: Request) {
   const data = await res.json();
   if (!res.ok) return NextResponse.json(data, { status: res.status });
 
-  const topPriority = data.evaluation?.priorities?.[0];
-  const command = topPriority?.message ?? data.evaluation?.suggestions?.[0] ?? "No command generated";
-  const warning = data.evaluation?.warnings?.[0] ?? "No warnings";
+  const topDecision = data.decisions?.[0];
 
   return NextResponse.json({
     message: [
       `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}.`,
-      `Priority: ${topPriority?.priority ?? "low"}`,
-      `Command: ${command}`,
-      `Warning: ${warning}`,
-      `Score: ${data.evaluation?.score ?? "n/a"}`
-    ].join("\n"),
-    warnings: data.evaluation?.warnings ?? [],
-    priorities: data.evaluation?.priorities ?? []
+      `Top Command [P${topDecision?.priority_rank ?? "-"}]: ${topDecision?.command ?? "No command generated"}`,
+      `Reason: ${topDecision?.reason ?? "No reason"}`,
+      `Agent messages this cycle: ${data.mailboxSize ?? 0}`
+    ].join("\n")
   });
 }

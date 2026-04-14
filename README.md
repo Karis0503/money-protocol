@@ -1,59 +1,25 @@
-# Money Protocol V3
+# Money Protocol
 
-Scalable **Personal Finance OS** with strict layering and decision-first architecture.
+Production-ready starter for a **Personal Finance Operating System** built with Next.js + Supabase.
 
-## Refactored structure
+## Architecture
 
-- `lib/engine` → orchestration entry points for runtime, evaluation, monthly lifecycle, action generation, behavioral tracking, and multi-agent simulation.
-- `lib/rules` → deterministic domain rules (allocation + expense intelligence).
-- `lib/scoring` → financial score model.
-- `lib/ai` → autonomous multi-agent pipeline (insight/decision/warning communication).
-- `app/api` → thin API endpoints only.
-- `app/components` → UI display-only components.
+- `app/api/chat`: chat endpoint for the UI.
+- `app/api/transactions`: transaction ingestion + event-driven AI cycle trigger.
+- `app/api/cron/daily`: autonomous daily automation loop trigger.
+- `lib/ai/agents`: multi-agent communication broker + message types.
+- `lib/ai/memory-system.ts`: long-term memory load/store.
+- `lib/ai/prioritization.ts`: decision prioritization strategy.
+- `lib/ai/daily-automation-loop.ts`: scheduled autonomous loop for all users.
+- `supabase/schema.sql`: database schema.
 
-## Core APIs
+## AI Operating Model
 
-- `POST /api/transactions` → ingest transaction, apply income allocation, run evaluation + autonomous AI cycle.
-- `GET /api/actions` → fetch actionable commands for UI/mobile.
-- `POST /api/engine/evaluate` → evaluate current financial state.
-- `POST /api/cron/daily` → daily autonomous loop.
-
-## Decision engine
-
-`evaluateFinancialState(data)` returns:
-
-- `blocked`
-- `warnings`
-- `suggestions`
-- `score`
-- `priorities` (`high` = block, `medium` = warning, `low` = suggestion)
-- `escalations` (behavioral repeated-bad-habit escalation)
-
-## Behavioral tracking + multi-agent simulation
-
-- Tracks repeated patterns (food overuse, deficit risk) using memory counters.
-- Escalates warnings when bad habits repeat over multiple cycles.
-- Simulates three decision agents contributing to final priorities:
-  - **Budget Guardian**
-  - **Growth Advisor**
-  - **Risk Controller**
-
-## Allocation system
-
-Income is split by configurable rule defaults:
-
-- 50% essentials
-- 25% investment
-- 15% stability
-- 10% joy
-
-Recorded in `allocation_ledgers` for monthly budget intelligence and category limit warnings.
-
-## Monthly system
-
-- Generates historical records in `monthly_summaries`
-- Preserves month history for reporting
-- Supports automatic monthly lifecycle on each evaluation pass
+1. State Builder agent computes current financial state.
+2. Analysis agent generates behavioral and predictive insights.
+3. Decision agent generates and prioritizes enforceable commands.
+4. Warning agent summarizes critical alerts.
+5. Orchestrator stores outputs, logs inter-agent messages, and writes memory.
 
 ## Run
 
@@ -61,3 +27,7 @@ Recorded in `allocation_ledgers` for monthly budget intelligence and category li
 2. Fill credentials.
 3. `npm install`
 4. `npm run dev`
+
+## Daily automation
+
+Schedule POST `/api/cron/daily` and pass `x-cron-secret` header.

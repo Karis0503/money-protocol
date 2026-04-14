@@ -1,19 +1,20 @@
-import { Decision, FinancialState, Insight, MemoryRecord } from "@/types/domain";
+import { Decision, FinancialState, Insight } from "@/types/domain";
+
+export type AgentName = "state_builder" | "analysis_engine" | "decision_engine" | "warning_engine";
+
+export interface AgentMessage {
+  from: AgentName;
+  to: AgentName | "orchestrator";
+  topic: string;
+  payload: Record<string, unknown>;
+  createdAt: string;
+}
 
 export interface AgentContext {
   userId: string;
   state: FinancialState;
-  memories: MemoryRecord[];
-  sharedInsights: Insight[];
-}
-
-export interface AgentResult {
-  insights?: Insight[];
-  decisions?: Decision[];
-  outboundMessages?: Array<{ to: string; type: "analysis" | "decision" | "warning"; payload: string }>;
-}
-
-export interface ProtocolAgent {
-  id: string;
-  run(context: AgentContext): AgentResult;
+  insights: Insight[];
+  decisions: Decision[];
+  memory: string[];
+  mailbox: AgentMessage[];
 }

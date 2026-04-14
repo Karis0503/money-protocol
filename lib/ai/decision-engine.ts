@@ -1,6 +1,14 @@
+import { AgentMessage } from "@/lib/ai/agents/types";
+import { prioritizeDecisions } from "@/lib/ai/prioritization";
 import { Decision, FinancialState, Insight } from "@/types/domain";
 
-export function generateDecisions(userId: string, state: FinancialState, insights: Insight[]): Decision[] {
+export function generateDecisions(
+  userId: string,
+  state: FinancialState,
+  insights: Insight[],
+  mailbox: AgentMessage[] = [],
+  memory: string[] = []
+): Decision[] {
   const decisions: Decision[] = [];
 
   if (state.balance <= 0) {
@@ -31,6 +39,24 @@ export function generateDecisions(userId: string, state: FinancialState, insight
     });
   }
 
+  if (memory.some((m) => m.toLowerCase().includes("missed budget"))) {
+    decisions.push({
+      user_id: userId,
+      severity: "high",
+      command: "Lock discretionary spending for 72 hours",
+      reason: "Memory system detected repeated missed budgets."
+    });
+  }
+
+  if (mailbox.length > 2) {
+    decisions.push({
+      user_id: userId,
+      severity: "medium",
+      command: "Review agent warning summary before any purchase",
+      reason: "Multi-agent network reported elevated coordination signals."
+    });
+  }
+
   if (decisions.length === 0) {
     decisions.push({
       user_id: userId,
@@ -40,5 +66,5 @@ export function generateDecisions(userId: string, state: FinancialState, insight
     });
   }
 
-  return decisions;
+  return prioritizeDecisions(decisions);
 }
