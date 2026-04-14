@@ -6,8 +6,12 @@ type Msg = { role: "user" | "assistant"; text: string };
 
 export function ChatClient() {
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", text: "Welcome to Money Protocol. Send a transaction like 'makan 50k' or 'gaji 5 juta'." }
+    {
+      role: "assistant",
+      text: "Welcome to Money Protocol. Send a transaction like 'makan 50k' or 'gaji 5 juta'."
+    }
   ]);
+
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,19 +26,25 @@ export function ChatClient() {
     };
 
     fetchActions();
+
+    // optional: auto refresh tiap 3 detik
+    const interval = setInterval(fetchActions, 3000);
+    return () => clearInterval(interval);
   }, []);
 
+  // 🔥 GLOBAL BLOCK STATE
+  const isBlocked =
+    actions.length > 0 &&
+    (actions[0].command.toLowerCase().includes("stop") ||
+      actions[0].command.toLowerCase().includes("do not"));
+
   async function onSubmit(e: FormEvent) {
-    e.preventDefault(); // ✅ harus paling atas
+    e.preventDefault();
 
-    // 🔥 AI BLOCK
-    if (actions.length > 0) {
-      const command = actions[0].command.toLowerCase();
-
-      if (command.includes("stop") || command.includes("do not")) {
-        alert("🚫 AI BLOCKED: " + actions[0].command);
-        return;
-      }
+    // 🔥 BLOCK EXECUTION
+    if (isBlocked) {
+      alert("🚫 AI BLOCKED: " + actions[0].command);
+      return;
     }
 
     const payload = text.trim();
@@ -52,9 +62,13 @@ export function ChatClient() {
       });
 
       const data = await res.json();
+
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", text: data.message ?? data.error ?? "Unknown response" }
+        {
+          role: "assistant",
+          text: data.message ?? data.error ?? "Unknown response"
+        }
       ]);
     } finally {
       setLoading(false);
@@ -67,6 +81,21 @@ export function ChatClient() {
         <h1>Money Protocol</h1>
         <p>Personal Finance Operating System</p>
       </div>
+
+      {/* 🔥 WARNING BANNER */}
+      {isBlocked && (
+        <div
+          style={{
+            background: "#ff4d4f",
+            color: "white",
+            padding: "10px",
+            borderRadius: "8px",
+            marginBottom: "10px"
+          }}
+        >
+          🚫 AI is restricting actions: {actions[0].command}
+        </div>
+      )}
 
       <div className="card messages">
         {messages.map((message, index) => (
@@ -81,8 +110,10 @@ export function ChatClient() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type: makan 50k"
+          disabled={isBlocked}
         />
-        <button type="submit" disabled={loading}>
+
+        <button type="submit" disabled={loading || isBlocked}>
           {loading ? "..." : "Send"}
         </button>
       </form>
