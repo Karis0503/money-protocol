@@ -110,7 +110,6 @@ export function ChatClient() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type: makan 50k"
-          disabled={isBlocked}
         />
 
         <button type="submit" disabled={loading || isBlocked}>
