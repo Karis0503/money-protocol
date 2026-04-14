@@ -7,10 +7,7 @@ export async function POST(request: Request) {
 // if (secret !== process.env.CRON_SECRET) {
 //   return new Response("Unauthorized", { status: 401 });
 // }
-  if (secret !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+  
   try {
     const report = await runDailyAutomationLoop();
     return NextResponse.json({ ok: true, ...report });
