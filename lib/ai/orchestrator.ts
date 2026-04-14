@@ -3,6 +3,7 @@ import { AgentContext } from "@/lib/ai/agents/types";
 import { loadAgentMemory, storeMemoryEntries } from "@/lib/ai/memory-system";
 import { buildFinancialState } from "@/lib/ai/state-builder";
 import { supabaseAdmin } from "@/lib/db/supabase";
+import { executeActions } from "@/lib/ai/action-engine";
 
 export async function runMoneyProtocolCycle(userId: string) {
   const state = await buildFinancialState(userId);
@@ -40,6 +41,7 @@ export async function runMoneyProtocolCycle(userId: string) {
     );
   }
 
+  await executeActions(userId, rankedDecisions);
   await storeMemoryEntries(userId, [
     {
       key: "last_cycle_summary",
