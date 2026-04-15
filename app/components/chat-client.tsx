@@ -312,6 +312,19 @@ color: "#00c6ff",
 </p>
     <p>{review.insightSummary}</p>
   </div>
+
+  {review.allocation && (
+  <div style={{ marginTop: "12px" }}>
+    <p style={{ fontWeight: "bold", marginBottom: "6px" }}>
+      🧠 Allocation System
+    </p>
+
+    <p>🏠 Essentials: {review.allocation.essentials.toLocaleString()}</p>
+    <p>📈 Investment: {review.allocation.investment.toLocaleString()}</p>
+    <p>🛡 Stability: {review.allocation.stability.toLocaleString()}</p>
+    <p>🎉 Joy: {review.allocation.joy.toLocaleString()}</p>
+  </div>
+)}
 )}
 
       {/* 🧾 HISTORY */}
