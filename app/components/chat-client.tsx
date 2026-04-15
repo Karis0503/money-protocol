@@ -14,8 +14,6 @@ export function ChatClient() {
 
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // 🔥 AI actions
   const [actions, setActions] = useState<any[]>([]);
 
   useEffect(() => {
@@ -26,13 +24,10 @@ export function ChatClient() {
     };
 
     fetchActions();
-
-    // optional: auto refresh tiap 3 detik
     const interval = setInterval(fetchActions, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // 🔥 GLOBAL BLOCK STATE
   const isBlocked =
     actions.length > 0 &&
     (actions[0].command.toLowerCase().includes("stop") ||
@@ -41,7 +36,6 @@ export function ChatClient() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
 
-    // 🔥 BLOCK EXECUTION
     if (isBlocked) {
       alert("🚫 AI BLOCKED: " + actions[0].command);
       return;
@@ -82,7 +76,7 @@ export function ChatClient() {
         <p>Personal Finance Operating System</p>
       </div>
 
-      {/* 🔥 WARNING BANNER */}
+      {/* 🔥 WARNING */}
       {isBlocked && (
         <div
           style={{
@@ -97,6 +91,17 @@ export function ChatClient() {
         </div>
       )}
 
+      {/* 🔥 AI INSIGHT */}
+      {messages.length > 1 && (
+        <div className="card" style={{ marginBottom: "10px" }}>
+          <h3>🔥 AI Insight</h3>
+          <pre style={{ whiteSpace: "pre-wrap", opacity: 0.8 }}>
+            {messages[messages.length - 1].text}
+          </pre>
+        </div>
+      )}
+
+      {/* 💬 CHAT */}
       <div className="card messages">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.role}`}>
@@ -105,11 +110,13 @@ export function ChatClient() {
         ))}
       </div>
 
+      {/* ✍️ INPUT */}
       <form className="card composer" onSubmit={onSubmit}>
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type: makan 50k"
+          disabled={isBlocked}
         />
 
         <button type="submit" disabled={loading || isBlocked}>
