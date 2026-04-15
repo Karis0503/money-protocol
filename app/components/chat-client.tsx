@@ -80,7 +80,7 @@ useEffect(() => {
       const data = await res.json();
 
       // 🔥 INI YANG BIKIN AI LU "HIDUP"
-      setInsight(data.insight);
+      set(data.insight);
       await fetchHistory();
 
       setMessages((prev) => [
@@ -153,7 +153,7 @@ useEffect(() => {
       {/* ========================= */}
       {/* 🔥 AI INSIGHT (FIXED) */}
       {/* ========================= */}
-    {insight && (
+{insight && (
   <div
     className="card"
     style={{
@@ -168,7 +168,7 @@ useEffect(() => {
   >
     <h3>🔥 AI Insight</h3>
 
-    {/* ✅ HABIT WARNING TARUH DI SINI */}
+    {/* ✅ TARO DI SINI */}
     {insight.habitWarning && (
       <p style={{ color: "#ff9800" }}>
         ⚠️ {insight.habitWarning}
