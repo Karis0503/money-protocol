@@ -44,21 +44,22 @@ export function ChatClient() {
 };
 
   const fetchReview = async () => {
+  const res = await fetch("/api/review");
+  const data = await res.json();
+  setReview(data);
+};
+
   const clearHistory = async () => {
   const confirmClear = confirm("Yakin mau hapus semua history?");
   if (!confirmClear) return;
+
   await fetch("/api/clear", {
     method: "DELETE",
   });
 
-  // refresh UI
   setHistory([]);
   setInsight(null);
   setReview(null);
-};
-  const res = await fetch("/api/review");
-  const data = await res.json();
-  setReview(data);
 };
 
 useEffect(() => {
@@ -215,18 +216,23 @@ useEffect(() => {
           : "#4caf50"
     }}
   >
-  <p style={{
-  fontSize: "28px",
-  fontWeight: "bold",
-  textAlign: "center"
-}}>
-  {insight.score}/100
-</div>
+    Score
+  </p>
+
+  <p
+    style={{
+      fontSize: "28px",
+      fontWeight: "bold",
+      textAlign: "center"
+    }}
+  >
+    {insight.score}/100
+  </p>
 
   <span style={{ marginLeft: "10px", fontSize: "14px" }}>
     {insight.delta < 0 ? "📉" : "📈"} {insight.delta}
   </span>
-</p>
+</div>
     <p style={{ opacity: 0.7, fontSize: "12px" }}>
   Real-time behavioral analysis
 </p>
