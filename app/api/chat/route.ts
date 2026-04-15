@@ -18,6 +18,37 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
+    const text = body.text.toLowerCase();
+
+const isTransaction =
+  text.includes("k") ||
+  text.includes("ribu") ||
+  text.includes("juta") ||
+  text.includes("gaji") ||
+  text.includes("makan") ||
+  text.includes("beli");
+
+if (!isTransaction) {
+  // 👉 langsung AI chat mode
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: body.text },
+    ],
+  });
+
+  const aiReply =
+    completion.choices?.[0]?.message?.content ||
+    "Ngomong aja santai, gw dengerin 😄";
+
+  return NextResponse.json({
+    insight: null,
+    parsed: null,
+    reply: aiReply,
+  });
+}
+
     // =========================
     // 📦 KIRIM KE TRANSACTIONS
     // =========================
