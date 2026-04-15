@@ -18,11 +18,12 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const text = body.text.toLowerCase();
-    console.log("USER TEXT:", text);
-    console.log("IS TRANSACTION:", isTransaction);
+   const text = body.text.toLowerCase();
 
 const isTransaction = /\d/.test(text);
+
+console.log("USER TEXT:", text);
+console.log("IS TRANSACTION:", isTransaction);
 
 if (!isTransaction) {
   // =========================
@@ -45,13 +46,12 @@ if (!isTransaction) {
     parsed: null,
     reply: aiReply,
   });
-}
 
 // =========================
 // 💰 TRANSACTION MODE
 // =========================
 
-const res = await fetch(`${new URL(request.url).origin}/api/transactions`, {
+} else { const res = await fetch(`${new URL(request.url).origin}/api/transactions`, {
   method: "POST",
   headers: { "content-type": "application/json" },
   body: JSON.stringify(body),
@@ -71,6 +71,8 @@ return NextResponse.json({
       .from("transactions")
       .select("*")
       .eq("user_id", DEFAULT_USER_ID);
+
+       }
 
     // =========================
 // 🧠 HABIT DETECTION
