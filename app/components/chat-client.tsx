@@ -109,13 +109,13 @@ useEffect(() => {
       await fetchHistory();
       await fetchReview();
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}`
-        }
-      ]);
+     setMessages((prev) => [
+  ...prev,
+  {
+    role: "assistant",
+    text: data.reply || `Recorded ${data.parsed.type} ${data.parsed.amount}`
+  }
+]);
     } finally {
       setLoading(false);
     }
