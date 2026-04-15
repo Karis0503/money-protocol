@@ -18,6 +18,7 @@ export function ChatClient() {
 
   const [actions, setActions] = useState<any[]>([]);
   const [insight, setInsight] = useState<any>(null); // 🔥 TAMBAHAN PENTING
+  const [mode, setMode] = useState("relaxed");
 
   // =========================
   // 🔄 FETCH ACTIONS
@@ -42,6 +43,16 @@ export function ChatClient() {
   };
 
   fetchHistory();
+}, []);
+
+  useEffect(() => {
+  const fetchMode = async () => {
+    const res = await fetch("/api/user");
+    const data = await res.json();
+    setMode(data.mode || "relaxed");
+  };
+
+  fetchMode();
 }, []);
 
   // =========================
@@ -100,9 +111,37 @@ export function ChatClient() {
       {/* 🧠 HEADER */}
       {/* ========================= */}
       <div>
-        <h1>Money Protocol</h1>
-        <p>Personal Finance Operating System</p>
-      </div>
+  <h1>Money Protocol</h1>
+  <p>Personal Finance Operating System</p>
+
+  {/* ⚙️ MODE SWITCH */}
+  <div style={{ marginTop: "10px" }}>
+    {["relaxed", "strict", "brutal"].map((m) => (
+      <button
+        key={m}
+        onClick={async () => {
+          setMode(m);
+
+          await fetch("/api/mode", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ mode: m })
+          });
+        }}
+        style={{
+          marginRight: "8px",
+          padding: "6px 12px",
+          borderRadius: "6px",
+          background: mode === m ? "#444" : "#222",
+          color: "white",
+          cursor: "pointer"
+        }}
+      >
+        {m.toUpperCase()}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* ========================= */}
       {/* 🚫 WARNING */}
