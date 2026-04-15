@@ -130,7 +130,9 @@ useEffect(() => {
   style={{
     marginBottom: "10px",
     padding: "6px 12px",
-    background: "#222",
+    background: "rgba(0,198,255,0.1)",
+border: "1px solid rgba(0,198,255,0.3)",
+color: "#00c6ff"
     borderRadius: "6px",
   }}
 >
@@ -303,6 +305,10 @@ useEffect(() => {
   {review.totalIncome > 0
     ? ((review.totalExpense / review.totalIncome) * 100).toFixed(0)
     : 0}%
+</p>
+    <p style={{ color: "#ff9800" }}>
+  {review.totalExpense > review.totalIncome * 0.7 &&
+    "⚠️ You are overspending compared to your income"}
 </p>
     <p>{review.insightSummary}</p>
   </div>
