@@ -65,6 +65,11 @@ export function ChatClient() {
 useEffect(() => {
   fetchHistory();
 }, []);
+
+  setMessages((prev) => [
+  ...prev,
+  { role: "assistant", content: data.reply },
+]);
   
   // =========================
   // 🚫 BLOCK CHECK
