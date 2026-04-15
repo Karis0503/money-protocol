@@ -305,7 +305,9 @@ const completion = await openai.chat.completions.create({
   ],
 });
 
-const aiReply = completion.choices[0].message.content;
+const aiReply =
+  completion.choices?.[0]?.message?.content ||
+  "Gw dengerin kok, tapi belum kebaca jelas. Coba jelasin dikit lagi ya.";
 
 return NextResponse.json({
   insight,
