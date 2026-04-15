@@ -5,6 +5,7 @@ import { FormEvent, useState, useEffect } from "react";
 type Msg = { role: "user" | "assistant"; text: string };
 
 export function ChatClient() {
+  const [history, setHistory] = useState<any[]>([]);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -32,6 +33,16 @@ export function ChatClient() {
     const interval = setInterval(fetchActions, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+  const fetchHistory = async () => {
+    const res = await fetch("/api/history");
+    const data = await res.json();
+    setHistory(data);
+  };
+
+  fetchHistory();
+}, []);
 
   // =========================
   // 🚫 BLOCK CHECK
@@ -135,6 +146,30 @@ export function ChatClient() {
           <p>💡 {insight.recommendation}</p>
         </div>
       )}
+
+      {/* 🧾 HISTORY */}
+<div className="card" style={{ marginBottom: "10px" }}>
+  <h3>🧾 History</h3>
+
+  {history.length === 0 && <p>No transactions yet</p>}
+
+  {history.map((tx) => (
+    <div
+      key={tx.id}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "6px 0",
+        borderBottom: "1px solid #222"
+      }}
+    >
+      <span>{tx.category}</span>
+      <span>
+        {tx.type === "income" ? "+" : "-"} {tx.amount}
+      </span>
+    </div>
+  ))}
+</div>
 
       {/* ========================= */}
       {/* 💬 CHAT */}
