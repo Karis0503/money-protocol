@@ -126,6 +126,12 @@ export async function POST(request: Request) {
   // 🧾 RESPONSE
   // =========================
   return NextResponse.json({
+     parsed: data.parsed,
+     insight: {
+    ratio,
+    severity,
+    mode,
+  },
     message: [
       `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}.`,
       `Food ratio: ${(ratio * 100).toFixed(0)}%`,
