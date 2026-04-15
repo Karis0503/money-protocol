@@ -203,21 +203,20 @@ const delta = score - prevScore;
     // =========================
     // 🧾 RESPONSE
     // =========================
-    return NextResponse.json({
-      parsed: data.parsed,
-      insight,
-      message: [
-        `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}.`,
-        // ❌ HAPUS aja baris ini
-        // biar gak double source of truth
-        `Severity: ${severity.toUpperCase()}`,
-        `Mode: ${mode}`,
-        shouldBlock
-          ? "🚫 Action: STOP ORDERING FOOD"
-          : "✅ Allowed",
-        `Agent messages: ${data.mailboxSize ?? 0}`
-      ].join("\n")
-    });
+   const allocation = {
+  essentials: totalIncome * 0.5,
+  investment: totalIncome * 0.25,
+  stability: totalIncome * 0.15,
+  joy: totalIncome * 0.1,
+};
+
+return NextResponse.json({
+  totalIncome,
+  totalExpense,
+  score: Math.round(score),
+  insightSummary,
+  allocation, // 🔥 TAMBAHAN
+});
   } catch (err) {
     return NextResponse.json(
       { error: "Internal server error", detail: String(err) },
