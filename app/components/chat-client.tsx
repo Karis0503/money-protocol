@@ -102,6 +102,7 @@ useEffect(() => {
       // 🔥 INI YANG BIKIN AI LU "HIDUP"
       setInsight(data.insight);
       await fetchHistory();
+      await fetchReview();
 
       setMessages((prev) => [
         ...prev,
@@ -228,35 +229,28 @@ useEffect(() => {
     Score
   </p>
 
-  <p
-    style={{
-      fontSize: "28px",
-      fontWeight: "bold",
-      textAlign: "center"
-    }}
-  >
-    <p
+  <div
   style={{
-    fontSize: "48px",
-    fontWeight: "bold",
-    textAlign: "center",
-    margin: "10px 0",
-    color:
-      insight.score < 40
-        ? "#ff4d4f"
-        : insight.score < 70
-        ? "#ff9800"
-        : "#4caf50"
+    textAlign: "center"
   }}
 >
-  {insight.score}
-  <span style={{ fontSize: "18px", opacity: 0.6 }}>/100</span>
-</p>
+  <p
+    style={{
+      fontSize: "48px",
+      fontWeight: "bold",
+      margin: "10px 0",
+      color:
+        insight.score < 40
+          ? "#ff4d4f"
+          : insight.score < 70
+          ? "#ff9800"
+          : "#4caf50"
+    }}
+  >
+    {insight.score}
+    <span style={{ fontSize: "18px", opacity: 0.6 }}>/100</span>
   </p>
-
-  <span style={{ marginLeft: "10px", fontSize: "14px" }}>
-    {insight.delta < 0 ? "📉" : "📈"} {insight.delta}
-  </span>
+</div>
 </div>
     <p style={{ opacity: 0.7, fontSize: "12px" }}>
   Real-time behavioral analysis
@@ -310,7 +304,9 @@ useEffect(() => {
   boxShadow: "0 0 30px rgba(0,114,255,0.2)"
 }}>
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-  <h3>🧾 History</h3>
+  <h3 style={{ fontSize: "18px", opacity: 0.8 }}>
+  🧾 History
+</h3>
 
   <button
   onClick={clearHistory}
@@ -336,7 +332,7 @@ useEffect(() => {
       style={{
         display: "flex",
         justifyContent: "space-between",
-        padding: "6px 0",
+        padding: "10px 0",
         borderBottom: "1px solid #222"
       }}
     >
