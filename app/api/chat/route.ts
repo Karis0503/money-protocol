@@ -320,6 +320,8 @@ Tone rules:
 - chill → santai, friendly, kayak temen
 - calm → normal, simple
 - strict → tegas, agak nyindir dikit tapi masih bantu
+Always respond in casual Indonesian language.
+Use slang like: gw, lo, santai, dll.
 
 Current tone: ${tone}
 
