@@ -91,9 +91,13 @@ useEffect(() => {
     const payload = text.trim();
     if (!payload) return;
 
-    setMessages((prev) => [...prev, { role: "user", text: payload }]);
-    setText("");
-    setLoading(true);
+   setMessages((prev) => [
+  ...prev,
+  {
+    role: "assistant",
+    text: data.reply || `Recorded ${data.parsed.type} ${data.parsed.amount}`
+  }
+]);
 
     try {
       const res = await fetch("/api/chat", {
@@ -108,14 +112,7 @@ useEffect(() => {
       setInsight(data.insight);
       await fetchHistory();
       await fetchReview();
-
-     setMessages((prev) => [
-  ...prev,
-  {
-    role: "assistant",
-    text: data.reply || `Recorded ${data.parsed.type} ${data.parsed.amount}`
-  }
-]);
+      
     } finally {
       setLoading(false);
     }
