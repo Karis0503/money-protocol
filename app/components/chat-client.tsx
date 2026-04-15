@@ -167,6 +167,9 @@ useEffect(() => {
     }}
   >
     <h3>🔥 AI Insight</h3>
+    <p style={{ opacity: 0.7, fontSize: "12px" }}>
+  Real-time behavioral analysis
+</p>
 
     {insight.habitWarning && (
       <p style={{ color: "#ff9800" }}>
@@ -179,6 +182,19 @@ useEffect(() => {
     <p>⚙️ Mode: {mode}</p>
     <p>{insight.shouldBlock ? "🚫 BLOCKED" : "✅ Allowed"}</p>
     <p>💡 {insight.recommendation}</p>
+    <p>
+  🧠 AI says:{" "}
+  {insight.severity === "high"
+    ? "You're losing control."
+    : insight.severity === "medium"
+    ? "You're slipping."
+    : "You're in control."}
+</p>
+    {mode === "brutal" && insight.severity === "high" && (
+  <p style={{ color: "red" }}>
+    💀 Stop lying to yourself.
+  </p>
+)}
   </div>
 )}
 
