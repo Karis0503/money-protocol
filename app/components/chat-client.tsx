@@ -285,46 +285,52 @@ color: "#00c6ff",
   </div>
 )}
 
-      {review && (
-  <div
-    style={{
-      marginTop: "12px",
-      padding: "16px",
-      borderRadius: "12px",
-      background: "rgba(255,255,255,0.03)",
-      border: "1px solid rgba(255,255,255,0.08)",
-      backdropFilter: "blur(10px)"
-    }}
-  >
-    <p>📊 Monthly Review</p>
-    <p>💰 Income: {review.totalIncome}</p>
-    <p>💸 Expense: {review.totalExpense}</p>
-    <p>🧠 Score: {review.score}</p>
-    <p>
-  📊 Spending Ratio:{" "}
-  {review.totalIncome > 0
-    ? ((review.totalExpense / review.totalIncome) * 100).toFixed(0)
-    : 0}%
-</p>
-    <p style={{ color: "#ff9800" }}>
-  {review.totalExpense > review.totalIncome * 0.7 &&
-    "⚠️ You are overspending compared to your income"}
-</p>
-    <p>{review.insightSummary}</p>
-  </div>
+     {review && (
+  <>
+    <div
+      style={{
+        marginTop: "12px",
+        padding: "16px",
+        borderRadius: "12px",
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        backdropFilter: "blur(10px)"
+      }}
+    >
+      <p>📊 Monthly Review</p>
+      <p>💰 Income: {review.totalIncome}</p>
+      <p>💸 Expense: {review.totalExpense}</p>
+      <p>🧠 Score: {review.score}</p>
 
-  {review.allocation && (
-  <div style={{ marginTop: "12px" }}>
-    <p style={{ fontWeight: "bold", marginBottom: "6px" }}>
-      🧠 Allocation System
-    </p>
+      <p>
+        📊 Spending Ratio:{" "}
+        {review.totalIncome > 0
+          ? ((review.totalExpense / review.totalIncome) * 100).toFixed(0)
+          : 0}%
+      </p>
 
-    <p>🏠 Essentials: {review.allocation.essentials.toLocaleString()}</p>
-    <p>📈 Investment: {review.allocation.investment.toLocaleString()}</p>
-    <p>🛡 Stability: {review.allocation.stability.toLocaleString()}</p>
-    <p>🎉 Joy: {review.allocation.joy.toLocaleString()}</p>
-  </div>
-)}
+      <p style={{ color: "#ff9800" }}>
+        {review.totalExpense > review.totalIncome * 0.7 &&
+          "⚠️ You are overspending compared to your income"}
+      </p>
+
+      <p>{review.insightSummary}</p>
+    </div>
+
+    {/* 🔥 ALLOCATION (SEKARANG AMAN) */}
+    {review.allocation && (
+      <div style={{ marginTop: "12px" }}>
+        <p style={{ fontWeight: "bold", marginBottom: "6px" }}>
+          🧠 Allocation System
+        </p>
+
+        <p>🏠 Essentials: {review.allocation.essentials.toLocaleString()}</p>
+        <p>📈 Investment: {review.allocation.investment.toLocaleString()}</p>
+        <p>🛡 Stability: {review.allocation.stability.toLocaleString()}</p>
+        <p>🎉 Joy: {review.allocation.joy.toLocaleString()}</p>
+      </div>
+    )}
+  </>
 )}
 
       {/* 🧾 HISTORY */}
