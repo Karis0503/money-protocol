@@ -100,8 +100,10 @@ async function onSubmit(e: FormEvent) {
       {
         role: "assistant",
         text:
-          data.reply ||
-          `Recorded ${data.parsed?.type} ${data.parsed?.amount}`,
+  data.reply ||
+  (data.parsed
+    ? `Recorded ${data.parsed.type} ${data.parsed.amount}`
+    : "Gw ngerti, tapi belum ke-detect sebagai transaksi. Coba ulang ya 😅"),
       },
     ]);
 
