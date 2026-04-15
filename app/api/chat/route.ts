@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,6 +14,39 @@ const supabase = createClient(
 const DEFAULT_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export async function POST(request: Request) {
+  let tone = "calm";
+
+if (insight.score >= 80) {
+  tone = "chill";
+} else if (insight.score >= 50) {
+  tone = "calm";
+} else {
+  tone = "strict";
+}
+  const systemPrompt = `
+You are a personal finance AI assistant.
+
+Tone rules:
+- If tone = chill → relaxed, friendly, casual, supportive
+- If tone = calm → neutral, simple, not too emotional
+- If tone = strict → firm, slightly sarcastic, sharp but still helpful
+
+Behavior:
+- You can chat normally like a human
+- BUT your main job is helping user manage money
+- If user talks casually → respond naturally
+- If user talks about money → give insight
+
+Current tone: ${tone}
+
+User financial condition:
+- Score: ${insight.score}
+- Severity: ${insight.severity}
+- Food ratio: ${insight.ratio}
+
+Speak in Indonesian casual style.
+Keep it short, natural, not robotic.
+`;
   try {
     const body = await request.json();
 
