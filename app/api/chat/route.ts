@@ -122,6 +122,14 @@ export async function POST(request: Request) {
       });
     }
 
+    // 🔥 CLEAR ACTION KALO UDAH GAK PERLU
+    if (!shouldBlock) {
+      await supabase
+        .from("actions")
+        .delete()
+        .eq("user_id", DEFAULT_USER_ID);
+    }    
+
     // =========================
     // 💾 SAVE DECISION
     // =========================
