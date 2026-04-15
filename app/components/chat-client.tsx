@@ -317,6 +317,30 @@ color: "#00c6ff",
       <p>{review.insightSummary}</p>
     </div>
 
+    {insight.warnings?.length > 0 && (
+  <div style={{ marginTop: "10px" }}>
+    {insight.warnings.map((w: string, i: number) => (
+      <p key={i} style={{ color: "#ff4d4f" }}>
+        {w}
+      </p>
+    ))}
+  </div>
+)}
+
+    {insight.allocationUsed && (
+  <div style={{ marginTop: "10px" }}>
+    <p>📊 Allocation Usage</p>
+
+    <p>
+      🎉 Joy: {insight.allocationUsed.joy} / {insight.allocationLimit.joy}
+    </p>
+
+    <p>
+      🍔 Essentials: {insight.allocationUsed.essentials} / {insight.allocationLimit.essentials}
+    </p>
+  </div>
+)}
+
     {/* 🔥 ALLOCATION (SEKARANG AMAN) */}
     {review.allocation && (
       <div style={{ marginTop: "12px" }}>
