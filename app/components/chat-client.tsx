@@ -167,19 +167,7 @@ useEffect(() => {
     }}
   >
     <h3>🔥 AI Insight</h3>
-    <p
-  style={{
-    fontSize: "20px",
-    fontWeight: "bold",
-    color:
-      insight.score < 40
-        ? "red"
-        : insight.score < 70
-        ? "orange"
-        : "#4caf50"
-  }}
->
-  <p
+<p
   style={{
     fontSize: "20px",
     fontWeight: "bold",
@@ -196,6 +184,7 @@ useEffect(() => {
   <span style={{ marginLeft: "10px", fontSize: "14px" }}>
     {insight.delta < 0 ? "📉" : "📈"} {insight.delta}
   </span>
+</p>
 </p>
 </p>
     <p style={{ opacity: 0.7, fontSize: "12px" }}>
