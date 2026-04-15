@@ -14,15 +14,6 @@ const supabase = createClient(
 const DEFAULT_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export async function POST(request: Request) {
-  let tone = "calm";
-
-if (insight.score >= 80) {
-  tone = "chill";
-} else if (insight.score >= 50) {
-  tone = "calm";
-} else {
-  tone = "strict";
-}
 
   try {
     const body = await request.json();
