@@ -75,36 +75,44 @@ useEffect(() => {
   // =========================
   // 📤 SUBMIT
   // =========================
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
+async function onSubmit(e: FormEvent) {
+  e.preventDefault();
 
-    if (isBlocked) {
-      alert("🚫 AI BLOCKED: " + actions[0].command);
-      return;
-    }
+  const payload = text.trim();
+  if (!payload) return;
 
-    const payload = text.trim();
-    if (!payload) return;
+  setMessages((prev) => [...prev, { role: "user", text: payload }]);
+  setText("");
+  setLoading(true);
 
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: payload })
-      });
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ text: payload }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      // 🔥 INI YANG BIKIN AI LU "HIDUP"
-      setInsight(data.insight);
-      await fetchHistory();
-      await fetchReview();
-      
-    } finally {
-      setLoading(false);
-    }
+    // ✅ TARO DI SINI
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        text:
+          data.reply ||
+          `Recorded ${data.parsed?.type} ${data.parsed?.amount}`,
+      },
+    ]);
+
+    setInsight(data.insight);
+    await fetchHistory();
+    await fetchReview();
+
+  } finally {
+    setLoading(false);
   }
-
+}
   return (
     <div
   className="chat-shell"
