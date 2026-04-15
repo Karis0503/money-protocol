@@ -35,26 +35,19 @@ export function ChatClient() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-  const fetchHistory = async () => {
-    const res = await fetch("/api/history");
-    const data = await res.json();
-    setHistory(data);
-  };
+  
+ const fetchHistory = async () => {
+  const res = await fetch("/api/history");
+  const data = await res.json();
+  setHistory(data);
+};
 
+useEffect(() => {
   fetchHistory();
 }, []);
 
-  useEffect(() => {
-  const fetchMode = async () => {
-    const res = await fetch("/api/user");
-    const data = await res.json();
-    setMode(data.mode || "relaxed");
-  };
-
-  fetchMode();
-}, []);
-
+color: tx.type === "income" ? "#4caf50" : "#ff4d4f"
+  
   // =========================
   // 🚫 BLOCK CHECK
   // =========================
@@ -90,6 +83,7 @@ export function ChatClient() {
 
       // 🔥 INI YANG BIKIN AI LU "HIDUP"
       setInsight(data.insight);
+      await fetchHistory();
 
       setMessages((prev) => [
         ...prev,
@@ -178,7 +172,7 @@ export function ChatClient() {
 
           <p>🍔 Food ratio: {(insight.ratio * 100).toFixed(0)}%</p>
           <p>⚠️ Severity: {insight.severity}</p>
-          <p>⚙️ Mode: {insight.mode}</p>
+          <p>⚙️ Mode: {mode}</p>
           <p>{insight.shouldBlock ? "🚫 BLOCKED" : "✅ Allowed"}</p>
           <p>💡 {insight.recommendation}</p>
         </div>
@@ -200,10 +194,14 @@ export function ChatClient() {
         borderBottom: "1px solid #222"
       }}
     >
-      <span>{tx.category}</span>
-      <span>
-        {tx.type === "income" ? "+" : "-"} {tx.amount}
-      </span>
+      <span style={{ textTransform: "capitalize" }}>
+  {tx.category}
+</span>
+
+<span style={{ fontWeight: "bold" }}>
+  {tx.type === "income" ? "+" : "-"}{" "}
+  {tx.amount.toLocaleString()}
+</span>
     </div>
   ))}
 </div>
