@@ -162,13 +162,15 @@ useEffect(() => {
           });
         }}
         style={{
-          marginRight: "8px",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          background: mode === m ? "#444" : "#222",
-          color: "white",
-          cursor: "pointer"
-        }}
+  marginRight: "8px",
+  padding: "6px 14px",
+  borderRadius: "999px",
+  background: mode === m ? "#00c6ff" : "rgba(255,255,255,0.05)",
+  color: mode === m ? "black" : "white",
+  border: "1px solid rgba(255,255,255,0.1)",
+  cursor: "pointer",
+  transition: "0.2s"
+}}
       >
         {m.toUpperCase()}
       </button>
