@@ -23,30 +23,7 @@ if (insight.score >= 80) {
 } else {
   tone = "strict";
 }
-  const systemPrompt = `
-You are a personal finance AI assistant.
 
-Tone rules:
-- If tone = chill → relaxed, friendly, casual, supportive
-- If tone = calm → neutral, simple, not too emotional
-- If tone = strict → firm, slightly sarcastic, sharp but still helpful
-
-Behavior:
-- You can chat normally like a human
-- BUT your main job is helping user manage money
-- If user talks casually → respond naturally
-- If user talks about money → give insight
-
-Current tone: ${tone}
-
-User financial condition:
-- Score: ${insight.score}
-- Severity: ${insight.severity}
-- Food ratio: ${insight.ratio}
-
-Speak in Indonesian casual style.
-Keep it short, natural, not robotic.
-`;
   try {
     const body = await request.json();
 
@@ -329,30 +306,19 @@ Speak Indonesian casual.
 Short, natural, human-like.
 `;
 
-    // =========================
-// 🧠 AI SYSTEM PROMPT
-// =========================
-const systemPrompt = `
-You are a personal finance AI assistant.
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: body.text },
+  ],
+});
 
-Tone rules:
-- chill → santai, friendly, kayak temen
-- calm → normal, simple
-- strict → tegas, agak nyindir dikit tapi masih bantu
-
-Current tone: ${tone}
-
-User condition:
-- Score: ${insight.score}
-- Severity: ${insight.severity}
-
-Speak Indonesian casual.
-Short, natural, human-like.
-`;
+const aiReply = completion.choices[0].message.content;
 
 return NextResponse.json({
-  insight,          // 🔥 WAJIB
-  parsed: data.parsed
+  insight,
+  parsed: data.parsed,
   reply: aiReply,
 });
   } catch (err) {
