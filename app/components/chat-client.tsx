@@ -185,8 +185,6 @@ useEffect(() => {
     {insight.delta < 0 ? "📉" : "📈"} {insight.delta}
   </span>
 </p>
-</p>
-</p>
     <p style={{ opacity: 0.7, fontSize: "12px" }}>
   Real-time behavioral analysis
 </p>
