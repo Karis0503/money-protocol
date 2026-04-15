@@ -132,7 +132,7 @@ useEffect(() => {
     padding: "6px 12px",
     background: "rgba(0,198,255,0.1)",
 border: "1px solid rgba(0,198,255,0.3)",
-color: "#00c6ff"
+color: "#00c6ff",
     borderRadius: "6px",
   }}
 >
