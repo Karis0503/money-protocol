@@ -41,6 +41,11 @@ export function ChatClient() {
   const res = await fetch("/api/history");
   const data = await res.json();
   setHistory(data);
+};
+
+  const fetchReview = async () => {
+  const res = await fetch("/api/review");
+  const data = await res.json();
   setReview(data);
 };
 
