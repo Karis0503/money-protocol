@@ -85,6 +85,18 @@ if (foodCount >= 5) {
     }
 
     // =========================
+// 🧠 CATEGORY BREAKDOWN
+// =========================
+const categoryExpenseMap: Record<string, number> = {};
+
+expenseTx.forEach((t) => {
+  if (!categoryExpenseMap[t.category]) {
+    categoryExpenseMap[t.category] = 0;
+  }
+  categoryExpenseMap[t.category] += t.amount;
+});
+
+    // =========================
     // 👤 USER MODE
     // =========================
     const { data: user } = await supabase
@@ -213,6 +225,37 @@ const delta = score - prevScore;
   investment: totalIncome * 0.25,
   stability: totalIncome * 0.15,
   joy: totalIncome * 0.1,
+};
+
+    const allocationUsed = {
+  essentials: categoryExpenseMap["food"] || 0,
+  joy: categoryExpenseMap["entertainment"] || 0,
+  stability: categoryExpenseMap["bills"] || 0,
+  investment: 0 // nanti kita isi kalau ada
+};
+
+    const allocationLimit = {
+  essentials: totalIncome * 0.5,
+  investment: totalIncome * 0.25,
+  stability: totalIncome * 0.15,
+  joy: totalIncome * 0.1,
+};
+
+    let warnings: string[] = [];
+
+if (allocationUsed.joy > allocationLimit.joy) {
+  warnings.push("⚠️ Joy limit exceeded");
+}
+
+if (allocationUsed.essentials > allocationLimit.essentials) {
+  warnings.push("⚠️ Essentials too high");
+}
+
+    const insight = {
+  ...
+  warnings,
+  allocationUsed,
+  allocationLimit,
 };
 
 return NextResponse.json({
