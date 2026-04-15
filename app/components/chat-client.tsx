@@ -45,8 +45,6 @@ export function ChatClient() {
 useEffect(() => {
   fetchHistory();
 }, []);
-
-color: tx.type === "income" ? "#4caf50" : "#ff4d4f"
   
   // =========================
   // 🚫 BLOCK CHECK
