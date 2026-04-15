@@ -153,33 +153,35 @@ useEffect(() => {
       {/* ========================= */}
       {/* 🔥 AI INSIGHT (FIXED) */}
       {/* ========================= */}
-      {insight && (
-        <div
-          {insight.habitWarning && (
-  <p style={{ color: "#ff9800" }}>
-    ⚠️ {insight.habitWarning}
-  </p>
-)}
-          className="card"
-          style={{
-            marginBottom: "10px",
-            border:
-              insight.severity === "high"
-                ? "1px solid red"
-                : insight.severity === "medium"
-                ? "1px solid orange"
-                : "1px solid green"
-          }}
-        >
-          <h3>🔥 AI Insight</h3>
+    {insight && (
+  <div
+    className="card"
+    style={{
+      marginBottom: "10px",
+      border:
+        insight.severity === "high"
+          ? "1px solid red"
+          : insight.severity === "medium"
+          ? "1px solid orange"
+          : "1px solid green"
+    }}
+  >
+    <h3>🔥 AI Insight</h3>
 
-          <p>🍔 Food ratio: {(insight.ratio * 100).toFixed(0)}%</p>
-          <p>⚠️ Severity: {insight.severity}</p>
-          <p>⚙️ Mode: {mode}</p>
-          <p>{insight.shouldBlock ? "🚫 BLOCKED" : "✅ Allowed"}</p>
-          <p>💡 {insight.recommendation}</p>
-        </div>
-      )}
+    {/* ✅ HABIT WARNING TARUH DI SINI */}
+    {insight.habitWarning && (
+      <p style={{ color: "#ff9800" }}>
+        ⚠️ {insight.habitWarning}
+      </p>
+    )}
+
+    <p>🍔 Food ratio: {(insight.ratio * 100).toFixed(0)}%</p>
+    <p>⚠️ Severity: {insight.severity}</p>
+    <p>⚙️ Mode: {mode}</p>
+    <p>{insight.shouldBlock ? "🚫 BLOCKED" : "✅ Allowed"}</p>
+    <p>💡 {insight.recommendation}</p>
+  </div>
+)}
 
       {/* 🧾 HISTORY */}
 <div className="card" style={{ marginBottom: "10px" }}>
