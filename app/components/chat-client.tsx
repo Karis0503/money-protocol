@@ -116,7 +116,14 @@ useEffect(() => {
   }
 
   return (
-    <div className="chat-shell">
+    <div
+  className="chat-shell"
+  style={{
+    maxWidth: "900px",
+    margin: "0 auto",
+    padding: "20px"
+  }}
+>
       <button
   onClick={fetchReview}
   style={{
@@ -226,7 +233,23 @@ useEffect(() => {
       textAlign: "center"
     }}
   >
-    {insight.score}/100
+    <p
+  style={{
+    fontSize: "48px",
+    fontWeight: "bold",
+    textAlign: "center",
+    margin: "10px 0",
+    color:
+      insight.score < 40
+        ? "#ff4d4f"
+        : insight.score < 70
+        ? "#ff9800"
+        : "#4caf50"
+  }}
+>
+  {insight.score}
+  <span style={{ fontSize: "18px", opacity: 0.6 }}>/100</span>
+</p>
   </p>
 
   <span style={{ marginLeft: "10px", fontSize: "14px" }}>
@@ -275,20 +298,30 @@ useEffect(() => {
 )}
 
       {/* 🧾 HISTORY */}
-<div className="card" style={{ marginBottom: "10px" }}>
+<div className="card" style={{
+  marginBottom: "20px",
+  padding: "20px",
+  borderRadius: "16px",
+  background: "linear-gradient(135deg, rgba(0,198,255,0.08), rgba(0,114,255,0.05))",
+  backdropFilter: "blur(12px)",
+  border: "1px solid rgba(0,198,255,0.2)",
+  boxShadow: "0 0 30px rgba(0,114,255,0.2)"
+}}>
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
   <h3>🧾 History</h3>
 
   <button
     onClick={clearHistory}
     style={{
-      padding: "4px 10px",
-      background: "rgba(255,0,0,0.1)",
-      border: "1px solid rgba(255,0,0,0.3)",
-      borderRadius: "6px",
-      color: "#ff4d4f",
-      cursor: "pointer"
-    }}
+  marginRight: "8px",
+  padding: "6px 14px",
+  borderRadius: "999px",
+  background: mode === m ? "#00c6ff" : "rgba(255,255,255,0.05)",
+  color: mode === m ? "black" : "white",
+  border: "1px solid rgba(255,255,255,0.1)",
+  cursor: "pointer",
+  transition: "0.2s"
+}}
   >
     🗑 Clear
   </button>
