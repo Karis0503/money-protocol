@@ -44,6 +44,18 @@ export function ChatClient() {
 };
 
   const fetchReview = async () => {
+  const clearHistory = async () => {
+  const confirmClear = confirm("Yakin mau hapus semua history?");
+  if (!confirmClear) return;
+  await fetch("/api/clear", {
+    method: "DELETE",
+  });
+
+  // refresh UI
+  setHistory([]);
+  setInsight(null);
+  setReview(null);
+};
   const res = await fetch("/api/review");
   const data = await res.json();
   setReview(data);
@@ -257,7 +269,23 @@ useEffect(() => {
 
       {/* 🧾 HISTORY */}
 <div className="card" style={{ marginBottom: "10px" }}>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
   <h3>🧾 History</h3>
+
+  <button
+    onClick={clearHistory}
+    style={{
+      padding: "4px 10px",
+      background: "rgba(255,0,0,0.1)",
+      border: "1px solid rgba(255,0,0,0.3)",
+      borderRadius: "6px",
+      color: "#ff4d4f",
+      cursor: "pointer"
+    }}
+  >
+    🗑 Clear
+  </button>
+</div>
 
   {history.length === 0 && <p>No transactions yet</p>}
 
