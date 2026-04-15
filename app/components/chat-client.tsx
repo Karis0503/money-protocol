@@ -298,6 +298,12 @@ useEffect(() => {
     <p>💰 Income: {review.totalIncome}</p>
     <p>💸 Expense: {review.totalExpense}</p>
     <p>🧠 Score: {review.score}</p>
+    <p>
+  📊 Spending Ratio:{" "}
+  {review.totalIncome > 0
+    ? ((review.totalExpense / review.totalIncome) * 100).toFixed(0)
+    : 0}%
+</p>
     <p>{review.insightSummary}</p>
   </div>
 )}
