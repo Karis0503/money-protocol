@@ -59,9 +59,7 @@ export function ChatClient() {
   // 🚫 BLOCK CHECK
   // =========================
   const isBlocked =
-    actions.length > 0 &&
-      insight?.shouldBlock &&
-      actions.length > 0;
+    insight?.shouldBlock && actions.length > 0;
 
   // =========================
   // 📤 SUBMIT
