@@ -75,7 +75,7 @@ export function ChatClient() {
         ...prev,
         {
           role: "assistant",
-          text: data.message ?? data.error ?? "Unknown response"
+          text: data.parsed ?? data.error ?? "Unknown response"
         }
       ]);
     } finally {
