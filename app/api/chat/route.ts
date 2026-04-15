@@ -117,6 +117,12 @@ if (foodCount >= 5) {
       }
     }
 
+    // ambil score sebelumnya (simple version)
+const prevScore = 100; // nanti bisa disimpan di DB
+
+const delta = score - prevScore;
+    
+
     // =========================
     // 🧠 MODE LOGIC
     // =========================
@@ -170,7 +176,16 @@ if (foodCount >= 5) {
 let score = 100;
 
 // penalti dari food ratio
-score -= Math.min(70, ratio * 100);
+let score = 100;
+
+// lebih smooth (max penalty 50)
+score -= Math.min(50, ratio * 70);
+
+// severity penalty
+if (severity === "high") score -= 15;
+if (severity === "medium") score -= 8;
+
+if (score < 0) score = 0;
 
 // penalti kalau high severity
 if (severity === "high") score -= 20;
@@ -186,6 +201,7 @@ if (score < 0) score = 0;
       mode,
       shouldBlock,
       score,
+      delta,
       recommendation:
         severity === "high"
           ? "Reduce food spending this week"
