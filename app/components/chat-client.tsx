@@ -75,7 +75,7 @@ export function ChatClient() {
         ...prev,
         {
           role: "assistant",
-          text: data.parsed ?? data.error ?? "Unknown response"
+          text: `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}`
         }
       ]);
     } finally {
