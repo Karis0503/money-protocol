@@ -18,6 +18,7 @@ export function ChatClient() {
 
   const [actions, setActions] = useState<any[]>([]);
   const [insight, setInsight] = useState<any>(null); // 🔥 TAMBAHAN PENTING
+  const [review, setReview] = useState<any>(null);
   const [mode, setMode] = useState("relaxed");
 
   // =========================
@@ -40,6 +41,7 @@ export function ChatClient() {
   const res = await fetch("/api/history");
   const data = await res.json();
   setHistory(data);
+  setReview(data);
 };
 
 useEffect(() => {
@@ -97,9 +99,17 @@ useEffect(() => {
 
   return (
     <div className="chat-shell">
-      {/* ========================= */}
-      {/* 🧠 HEADER */}
-      {/* ========================= */}
+      <button
+  onClick={fetchReview}
+  style={{
+    marginBottom: "10px",
+    padding: "6px 12px",
+    background: "#222",
+    borderRadius: "6px",
+  }}
+>
+  📊 Monthly Review
+</button>
       <div>
   <h1>Money Protocol</h1>
   <p>Personal Finance Operating System</p>
@@ -213,6 +223,16 @@ useEffect(() => {
     💀 Stop lying to yourself.
   </p>
 )}
+  </div>
+)}
+
+      {review && (
+  <div style={{ marginTop: "10px", border: "1px solid #333", padding: "10px" }}>
+    <p>📊 Monthly Review</p>
+    <p>💰 Income: {review.totalIncome}</p>
+    <p>💸 Expense: {review.totalExpense}</p>
+    <p>🧠 Score: {review.score}</p>
+    <p>{review.insightSummary}</p>
   </div>
 )}
 
