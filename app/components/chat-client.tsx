@@ -38,8 +38,8 @@ export function ChatClient() {
   // =========================
   const isBlocked =
     actions.length > 0 &&
-    (actions[0].command.toLowerCase().includes("stop") ||
-      actions[0].command.toLowerCase().includes("do not"));
+      insight?.shouldBlock &&
+      actions.length > 0;
 
   // =========================
   // 📤 SUBMIT
