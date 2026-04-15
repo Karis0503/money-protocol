@@ -29,8 +29,9 @@ export async function POST(request: Request) {
     // =========================
     const { data: allTx } = await supabase
       .from("transactions")
-      .select("*");
-
+      .select("*")
+      .eq("user_id", DEFAULT_USER_ID)
+    
     const totalExpense =
       allTx
         ?.filter((t) => t.type === "expense")
