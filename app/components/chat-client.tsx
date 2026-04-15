@@ -196,7 +196,12 @@ useEffect(() => {
   {tx.category}
 </span>
 
-<span style={{ fontWeight: "bold" }}>
+<span
+  style={{
+    fontWeight: "bold",
+    color: tx.type === "income" ? "#4caf50" : "#ff4d4f"
+  }}
+>
   {tx.type === "income" ? "+" : "-"}{" "}
   {tx.amount.toLocaleString()}
 </span>
