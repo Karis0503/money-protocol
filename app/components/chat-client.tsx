@@ -320,7 +320,7 @@ color: "#00c6ff",
   </p>
 ))}
 
-    {insight.allocationUsed && (
+   {insight?.allocationUsed && insight?.allocationLimit && (
   <div style={{ marginTop: "10px" }}>
     <p>📊 Allocation Usage</p>
 
