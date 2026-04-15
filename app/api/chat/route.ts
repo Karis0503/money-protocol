@@ -295,9 +295,65 @@ if (allocationUsed.essentials > allocationLimit.essentials) {
   allocationLimit,
 };
 
+    // =========================
+// 🎭 TONE SYSTEM (TARO DI SINI)
+// =========================
+let tone = "calm";
+
+if (insight.score >= 80) {
+  tone = "chill";
+} else if (insight.score >= 50) {
+  tone = "calm";
+} else {
+  tone = "strict";
+}
+
+    // =========================
+// 🧠 AI SYSTEM PROMPT
+// =========================
+const systemPrompt = `
+You are a personal finance AI assistant.
+
+Tone rules:
+- chill → santai, friendly, kayak temen
+- calm → normal, simple
+- strict → tegas, agak nyindir dikit tapi masih bantu
+
+Current tone: ${tone}
+
+User condition:
+- Score: ${insight.score}
+- Severity: ${insight.severity}
+
+Speak Indonesian casual.
+Short, natural, human-like.
+`;
+
+    // =========================
+// 🧠 AI SYSTEM PROMPT
+// =========================
+const systemPrompt = `
+You are a personal finance AI assistant.
+
+Tone rules:
+- chill → santai, friendly, kayak temen
+- calm → normal, simple
+- strict → tegas, agak nyindir dikit tapi masih bantu
+
+Current tone: ${tone}
+
+User condition:
+- Score: ${insight.score}
+- Severity: ${insight.severity}
+
+Speak Indonesian casual.
+Short, natural, human-like.
+`;
+
 return NextResponse.json({
   insight,          // 🔥 WAJIB
   parsed: data.parsed
+  reply: aiReply,
 });
   } catch (err) {
     return NextResponse.json(
