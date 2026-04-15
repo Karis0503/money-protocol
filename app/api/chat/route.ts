@@ -23,8 +23,6 @@ export async function POST(request: Request) {
   const data = await res.json();
   if (!res.ok) return NextResponse.json(data, { status: res.status });
 
-  const topDecision = data.decisions?.[0];
-
   // =========================
   // 🧠 HITUNG TOTAL
   // =========================
@@ -39,7 +37,7 @@ export async function POST(request: Request) {
 
   const foodExpense =
     allTx
-      ?.filter((t) => t.category === "food")
+      ?.filter((t) => t.type === "expense" && t.category === "food")
       .reduce((sum, t) => sum + t.amount, 0) ?? 0;
 
   const ratio = totalExpense > 0 ? foodExpense / totalExpense : 0;
@@ -47,7 +45,7 @@ export async function POST(request: Request) {
   // =========================
   // 🎯 SEVERITY
   // =========================
-  let severity = "low";
+  let severity: "low" | "medium" | "high" = "low";
 
   if (ratio > 0.25 && foodExpense > 200000) {
     severity = "high";
@@ -67,11 +65,12 @@ export async function POST(request: Request) {
   const mode = user?.mode || "relaxed";
 
   // =========================
-  // ❄️ COOLDOWN SYSTEM
+  // ❄️ COOLDOWN (PER USER)
   // =========================
   const { data: lastAction } = await supabase
     .from("actions")
     .select("*")
+    .eq("user_id", DEFAULT_USER_ID)
     .order("created_at", { ascending: false })
     .limit(1);
 
@@ -92,16 +91,16 @@ export async function POST(request: Request) {
   // =========================
   let shouldBlock = false;
 
-  if (mode === "strict") {
+  if (mode === "relaxed") {
+    shouldBlock = false;
+  } else if (mode === "strict") {
     shouldBlock = severity === "high";
-  }
-
-  if (mode === "brutal") {
+  } else if (mode === "brutal") {
     shouldBlock = severity === "medium" || severity === "high";
   }
 
   // =========================
-  // 🚫 INSERT ACTION (BLOCK)
+  // 🚫 INSERT ACTION
   // =========================
   if (shouldInsert && shouldBlock) {
     await supabase.from("actions").insert({
@@ -117,21 +116,35 @@ export async function POST(request: Request) {
   await supabase.from("decisions").insert({
     user_id: DEFAULT_USER_ID,
     severity,
-    reason: `Food ratio ${(ratio * 100).toFixed(0)}%`,
+    reason: `Food spending is ${(ratio * 100).toFixed(
+      0
+    )}% of total expenses. This exceeds safe threshold.`,
     category: "food",
     action: "stop ordering food"
   });
 
   // =========================
-  // 🧾 RESPONSE
+  // 🧠 INSIGHT OBJECT
   // =========================
-  return NextResponse.json({
-     parsed: data.parsed,
-     insight: {
+  const insight = {
     ratio,
     severity,
     mode,
-  },
+    shouldBlock,
+    recommendation:
+      severity === "high"
+        ? "Reduce food spending this week"
+        : severity === "medium"
+        ? "Monitor food expenses"
+        : "Spending is under control"
+  };
+
+  // =========================
+  // 🧾 RESPONSE
+  // =========================
+  return NextResponse.json({
+    parsed: data.parsed,
+    insight,
     message: [
       `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}.`,
       `Food ratio: ${(ratio * 100).toFixed(0)}%`,
