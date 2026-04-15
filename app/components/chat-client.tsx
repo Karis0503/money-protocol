@@ -314,15 +314,11 @@ color: "#00c6ff",
       <p>{review.insightSummary}</p>
     </div>
 
-  {insight?.warnings?.length > 0 && (
-  <div style={{ marginTop: "10px" }}>
-    {insight.warnings.map((w: string, i: number) => (
-      <p key={i} style={{ color: "#ff4d4f" }}>
-        {w}
-      </p>
-    ))}
-  </div>
-)}
+{insight?.warnings?.map((w: string, i: number) => (
+  <p key={i} style={{ color: "#ff4d4f" }}>
+    {w}
+  </p>
+))}
 
     {insight.allocationUsed && (
   <div style={{ marginTop: "10px" }}>
