@@ -167,7 +167,8 @@ export async function POST(request: Request) {
       insight,
       message: [
         `Recorded ${data.parsed.type} ${data.parsed.amount} in ${data.parsed.category}.`,
-        `Food ratio: ${(ratio * 100).toFixed(0)}%`,
+        // ❌ HAPUS aja baris ini
+        // biar gak double source of truth
         `Severity: ${severity.toUpperCase()}`,
         `Mode: ${mode}`,
         shouldBlock
