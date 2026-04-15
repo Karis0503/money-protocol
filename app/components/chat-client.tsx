@@ -65,11 +65,6 @@ export function ChatClient() {
 useEffect(() => {
   fetchHistory();
 }, []);
-
-  setMessages((prev) => [
-  ...prev,
-  { role: "assistant", content: data.reply },
-]);
   
   // =========================
   // 🚫 BLOCK CHECK
@@ -90,14 +85,6 @@ useEffect(() => {
 
     const payload = text.trim();
     if (!payload) return;
-
-   setMessages((prev) => [
-  ...prev,
-  {
-    role: "assistant",
-    text: data.reply || `Recorded ${data.parsed.type} ${data.parsed.amount}`
-  }
-]);
 
     try {
       const res = await fetch("/api/chat", {
