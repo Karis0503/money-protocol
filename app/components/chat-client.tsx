@@ -313,19 +313,19 @@ useEffect(() => {
   <h3>🧾 History</h3>
 
   <button
-    onClick={clearHistory}
-    style={{
-  padding: "6px 14px",
-  borderRadius: "999px",
-  background: "rgba(255,0,0,0.1)",
-  color: "#ff4d4f",
-  border: "1px solid rgba(255,0,0,0.3)",
-  cursor: "pointer",
-  transition: "0.2s"
-}}
-  >
-    🗑 Clear
-  </button>
+  onClick={clearHistory}
+  style={{
+    padding: "6px 14px",
+    borderRadius: "999px",
+    background: "rgba(255,0,0,0.1)",
+    color: "#ff4d4f",
+    border: "1px solid rgba(255,0,0,0.3)",
+    cursor: "pointer",
+    transition: "0.2s"
+  }}
+>
+  🗑 Clear
+</button>
 </div>
 
   {history.length === 0 && <p>No transactions yet</p>}
