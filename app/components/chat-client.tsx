@@ -116,7 +116,15 @@ useEffect(() => {
   📊 Monthly Review
 </button>
       <div>
-  <h1>Money Protocol</h1>
+  <h1 style={{
+  fontSize: "32px",
+  fontWeight: "bold",
+  background: "linear-gradient(90deg, #00c6ff, #0072ff)",
+  WebkitBackgroundClip: "text",
+  color: "transparent"
+}}>
+  Money Protocol
+</h1>
   <p>Personal Finance Operating System</p>
 
   {/* ⚙️ MODE SWITCH */}
@@ -172,14 +180,14 @@ useEffect(() => {
   <div
     className="card"
     style={{
-      marginBottom: "10px",
-      border:
-        insight.severity === "high"
-          ? "1px solid red"
-          : insight.severity === "medium"
-          ? "1px solid orange"
-          : "1px solid green"
-    }}
+  marginBottom: "12px",
+  padding: "16px",
+  borderRadius: "12px",
+  background: "rgba(255,255,255,0.03)",
+  backdropFilter: "blur(10px)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 0 20px rgba(0,0,0,0.4)"
+}}
   >
     <h3>🔥 AI Insight</h3>
 <p
@@ -194,7 +202,13 @@ useEffect(() => {
         : "#4caf50"
   }}
 >
-  🧠 Score: {insight.score}/100
+  <p style={{
+  fontSize: "28px",
+  fontWeight: "bold",
+  textAlign: "center"
+}}>
+  {insight.score}/100
+</p>
 
   <span style={{ marginLeft: "10px", fontSize: "14px" }}>
     {insight.delta < 0 ? "📉" : "📈"} {insight.delta}
