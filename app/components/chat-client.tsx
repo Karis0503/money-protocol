@@ -284,7 +284,16 @@ useEffect(() => {
 )}
 
       {review && (
-  <div style={{ marginTop: "10px", border: "1px solid #333", padding: "10px" }}>
+  <div
+    style={{
+      marginTop: "12px",
+      padding: "16px",
+      borderRadius: "12px",
+      background: "rgba(255,255,255,0.03)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      backdropFilter: "blur(10px)"
+    }}
+  >
     <p>📊 Monthly Review</p>
     <p>💰 Income: {review.totalIncome}</p>
     <p>💸 Expense: {review.totalExpense}</p>
