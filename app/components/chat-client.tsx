@@ -155,6 +155,11 @@ useEffect(() => {
       {/* ========================= */}
       {insight && (
         <div
+          {insight.habitWarning && (
+  <p style={{ color: "#ff9800" }}>
+    ⚠️ {insight.habitWarning}
+  </p>
+)}
           className="card"
           style={{
             marginBottom: "10px",
