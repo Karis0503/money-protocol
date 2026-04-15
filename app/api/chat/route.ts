@@ -116,11 +116,6 @@ if (foodCount >= 5) {
         shouldInsert = false;
       }
     }
-
-    // ambil score sebelumnya (simple version)
-const prevScore = 100; // nanti bisa disimpan di DB
-
-const delta = score - prevScore;
     
 
     // =========================
@@ -175,24 +170,19 @@ const delta = score - prevScore;
     // 🧠 AI SCORE (0–100)
 let score = 100;
 
-// penalti dari food ratio
-let score = 100;
-
-// lebih smooth (max penalty 50)
+// smooth penalty dari ratio
 score -= Math.min(50, ratio * 70);
 
-// severity penalty
+// severity penalty (lebih ringan)
 if (severity === "high") score -= 15;
 if (severity === "medium") score -= 8;
 
+// clamp
 if (score < 0) score = 0;
 
-// penalti kalau high severity
-if (severity === "high") score -= 20;
-if (severity === "medium") score -= 10;
-
-// clamp biar ga minus
-if (score < 0) score = 0;
+    // ✅ BARU TARO DI SINI
+const prevScore = 100;
+const delta = score - prevScore;
     
     const insight = {
       habitWarning,
