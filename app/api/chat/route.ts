@@ -203,7 +203,12 @@ const delta = score - prevScore;
     // =========================
     // 🧾 RESPONSE
     // =========================
-   const allocation = {
+   const totalIncome =
+  allTx
+    ?.filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0) ?? 0;
+    
+    const allocation = {
   essentials: totalIncome * 0.5,
   investment: totalIncome * 0.25,
   stability: totalIncome * 0.15,
@@ -211,11 +216,8 @@ const delta = score - prevScore;
 };
 
 return NextResponse.json({
-  totalIncome,
-  totalExpense,
-  score: Math.round(score),
-  insightSummary,
-  allocation, // 🔥 TAMBAHAN
+  insight,          // 🔥 WAJIB
+  parsed: data.parsed
 });
   } catch (err) {
     return NextResponse.json(
