@@ -25,23 +25,31 @@ export async function POST(request: Request) {
     if (!res.ok) return NextResponse.json(data, { status: res.status });
 
     // =========================
-    // 🧠 HITUNG TOTAL
+    // 🧠 AMBIL TRANSAKSI USER
     // =========================
     const { data: allTx } = await supabase
       .from("transactions")
       .select("*")
-      .eq("user_id", DEFAULT_USER_ID)
-    
-    const totalExpense =
-      allTx
-        ?.filter((t) => t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0) ?? 0;
+      .eq("user_id", DEFAULT_USER_ID);
 
-    const foodExpense =
-      allTx
-        ?.filter((t) => t.type === "expense" && t.category === "food")
-        .reduce((sum, t) => sum + t.amount, 0) ?? 0;
+    // =========================
+    // 🧠 FILTER EXPENSE ONLY
+    // =========================
+    const expenseTx =
+      allTx?.filter((t) => t.type === "expense") ?? [];
 
+    const totalExpense = expenseTx.reduce(
+      (sum, t) => sum + t.amount,
+      0
+    );
+
+    const foodExpense = expenseTx
+      .filter((t) => t.category === "food")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    // =========================
+    // 📊 RATIO
+    // =========================
     const ratio = totalExpense > 0 ? foodExpense / totalExpense : 0;
 
     // =========================
@@ -49,7 +57,9 @@ export async function POST(request: Request) {
     // =========================
     let severity: "low" | "medium" | "high" = "low";
 
-    if (ratio > 0.25 && foodExpense > 200000) {
+    if (totalExpense === 0) {
+      severity = "low";
+    } else if (ratio > 0.25 && foodExpense > 200000) {
       severity = "high";
     } else if (ratio > 0.15) {
       severity = "medium";
@@ -67,7 +77,7 @@ export async function POST(request: Request) {
     const mode = user?.mode || "relaxed";
 
     // =========================
-    // ❄️ COOLDOWN (PER USER)
+    // ❄️ COOLDOWN
     // =========================
     const { data: lastAction } = await supabase
       .from("actions")
@@ -120,13 +130,13 @@ export async function POST(request: Request) {
       severity,
       reason: `Food spending is ${(ratio * 100).toFixed(
         0
-      )}% of total expenses. This exceeds safe threshold.`,
+      )}% of total expenses.`,
       category: "food",
       action: "stop ordering food"
     });
 
     // =========================
-    // 🧠 INSIGHT OBJECT
+    // 🧠 INSIGHT
     // =========================
     const insight = {
       ratio,
