@@ -195,22 +195,6 @@ if (score < 0) score = 0;
     // ✅ BARU TARO DI SINI
 const prevScore = 100;
 const delta = score - prevScore;
-    
-    const insight = {
-      habitWarning,
-      ratio,
-      severity,
-      mode,
-      shouldBlock,
-      score,
-      delta,
-      recommendation:
-        severity === "high"
-          ? "Reduce food spending this week"
-          : severity === "medium"
-          ? "Monitor food expenses"
-          : "Spending is under control"
-    };
 
     // =========================
     // 🧾 RESPONSE
@@ -251,8 +235,23 @@ if (allocationUsed.essentials > allocationLimit.essentials) {
   warnings.push("⚠️ Essentials too high");
 }
 
-    const insight = {
-  ...
+  const insight = {
+  habitWarning,
+  ratio,
+  severity,
+  mode,
+  shouldBlock,
+  score,
+  delta,
+
+  recommendation:
+    severity === "high"
+      ? "Reduce food spending this week"
+      : severity === "medium"
+      ? "Monitor food expenses"
+      : "Spending is under control",
+
+  // 🔥 TAMBAHAN BARU
   warnings,
   allocationUsed,
   allocationLimit,
