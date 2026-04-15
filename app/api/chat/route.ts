@@ -19,17 +19,15 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const text = body.text.toLowerCase();
+    console.log("USER TEXT:", text);
+    console.log("IS TRANSACTION:", isTransaction);
 
-const isTransaction =
-  text.includes("k") ||
-  text.includes("ribu") ||
-  text.includes("juta") ||
-  text.includes("gaji") ||
-  text.includes("makan") ||
-  text.includes("beli");
+const isTransaction = /\d/.test(text);
 
 if (!isTransaction) {
-  // 👉 langsung AI chat mode
+  // =========================
+  // 💬 CHAT MODE
+  // =========================
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -49,18 +47,23 @@ if (!isTransaction) {
   });
 }
 
-    // =========================
-    // 📦 KIRIM KE TRANSACTIONS
-    // =========================
-    const res = await fetch(`${new URL(request.url).origin}/api/transactions`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(body)
-    });
+// =========================
+// 💰 TRANSACTION MODE
+// =========================
 
-    const data = await res.json();
-    if (!res.ok) return NextResponse.json(data, { status: res.status });
+const res = await fetch(`${new URL(request.url).origin}/api/transactions`, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify(body),
+});
 
+const data = await res.json();
+
+return NextResponse.json({
+  insight: data.insight,
+  parsed: data.parsed,
+  reply: data.reply || "Transaksi dicatat 👍",
+});
     // =========================
     // 🧠 AMBIL TRANSAKSI USER
     // =========================
