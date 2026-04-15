@@ -165,12 +165,27 @@ if (foodCount >= 5) {
     // =========================
     // 🧠 INSIGHT
     // =========================
+
+    // 🧠 AI SCORE (0–100)
+let score = 100;
+
+// penalti dari food ratio
+score -= Math.min(70, ratio * 100);
+
+// penalti kalau high severity
+if (severity === "high") score -= 20;
+if (severity === "medium") score -= 10;
+
+// clamp biar ga minus
+if (score < 0) score = 0;
+    
     const insight = {
       habitWarning,
       ratio,
       severity,
       mode,
       shouldBlock,
+      score,
       recommendation:
         severity === "high"
           ? "Reduce food spending this week"
