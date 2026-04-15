@@ -33,6 +33,25 @@ export async function POST(request: Request) {
       .eq("user_id", DEFAULT_USER_ID);
 
     // =========================
+// 🧠 HABIT DETECTION
+// =========================
+
+// ambil 20 transaksi terakhir
+const recentTx = allTx?.slice(0, 20) ?? [];
+
+// hitung berapa kali makan
+const foodCount = recentTx.filter(
+  (t) => t.type === "expense" && t.category === "food"
+).length;
+
+// detect habit
+let habitWarning: string | null = null;
+
+if (foodCount >= 5) {
+  habitWarning = "You are frequently spending on food recently";
+}
+
+    // =========================
     // 🧠 FILTER EXPENSE ONLY
     // =========================
     const expenseTx =
@@ -147,6 +166,7 @@ export async function POST(request: Request) {
     // 🧠 INSIGHT
     // =========================
     const insight = {
+      habitWarning,
       ratio,
       severity,
       mode,
