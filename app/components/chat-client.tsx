@@ -14,8 +14,13 @@ export function ChatClient() {
 
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [actions, setActions] = useState<any[]>([]);
 
+  const [actions, setActions] = useState<any[]>([]);
+  const [insight, setInsight] = useState<any>(null); // 🔥 TAMBAHAN PENTING
+
+  // =========================
+  // 🔄 FETCH ACTIONS
+  // =========================
   useEffect(() => {
     const fetchActions = async () => {
       const res = await fetch("/api/actions");
@@ -28,11 +33,17 @@ export function ChatClient() {
     return () => clearInterval(interval);
   }, []);
 
+  // =========================
+  // 🚫 BLOCK CHECK
+  // =========================
   const isBlocked =
     actions.length > 0 &&
     (actions[0].command.toLowerCase().includes("stop") ||
       actions[0].command.toLowerCase().includes("do not"));
 
+  // =========================
+  // 📤 SUBMIT
+  // =========================
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
 
@@ -57,6 +68,9 @@ export function ChatClient() {
 
       const data = await res.json();
 
+      // 🔥 INI YANG BIKIN AI LU "HIDUP"
+      setInsight(data.insight);
+
       setMessages((prev) => [
         ...prev,
         {
@@ -71,12 +85,17 @@ export function ChatClient() {
 
   return (
     <div className="chat-shell">
+      {/* ========================= */}
+      {/* 🧠 HEADER */}
+      {/* ========================= */}
       <div>
         <h1>Money Protocol</h1>
         <p>Personal Finance Operating System</p>
       </div>
 
-      {/* 🔥 WARNING */}
+      {/* ========================= */}
+      {/* 🚫 WARNING */}
+      {/* ========================= */}
       {isBlocked && (
         <div
           style={{
@@ -91,17 +110,35 @@ export function ChatClient() {
         </div>
       )}
 
-      {/* 🔥 AI INSIGHT */}
-      {messages.length > 1 && (
-        <div className="card" style={{ marginBottom: "10px" }}>
+      {/* ========================= */}
+      {/* 🔥 AI INSIGHT (FIXED) */}
+      {/* ========================= */}
+      {insight && (
+        <div
+          className="card"
+          style={{
+            marginBottom: "10px",
+            border:
+              insight.severity === "high"
+                ? "1px solid red"
+                : insight.severity === "medium"
+                ? "1px solid orange"
+                : "1px solid green"
+          }}
+        >
           <h3>🔥 AI Insight</h3>
-          <pre style={{ whiteSpace: "pre-wrap", opacity: 0.8 }}>
-            {messages[messages.length - 1].text}
-          </pre>
+
+          <p>🍔 Food ratio: {(insight.ratio * 100).toFixed(0)}%</p>
+          <p>⚠️ Severity: {insight.severity}</p>
+          <p>⚙️ Mode: {insight.mode}</p>
+          <p>{insight.shouldBlock ? "🚫 BLOCKED" : "✅ Allowed"}</p>
+          <p>💡 {insight.recommendation}</p>
         </div>
       )}
 
+      {/* ========================= */}
       {/* 💬 CHAT */}
+      {/* ========================= */}
       <div className="card messages">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.role}`}>
@@ -110,7 +147,9 @@ export function ChatClient() {
         ))}
       </div>
 
+      {/* ========================= */}
       {/* ✍️ INPUT */}
+      {/* ========================= */}
       <form className="card composer" onSubmit={onSubmit}>
         <input
           value={text}
