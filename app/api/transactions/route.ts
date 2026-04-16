@@ -79,6 +79,8 @@ if (num) {
     if (ratio > 0.25) severity = "high";
     else if (ratio > 0.15) severity = "medium";
 
+    const shouldBlock = severity === "high";
+
     // =========================
     // 🧠 SCORE
     // =========================
@@ -134,6 +136,7 @@ Ngomong santai pakai bahasa Indonesia.
         score,
         severity,
         ratio,
+        shouldBlock,
       },
       reply: aiReply,
     });
