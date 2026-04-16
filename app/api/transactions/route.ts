@@ -11,6 +11,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+console.log({
+  amount,
+  type,
+  category,
+  ratio,
+  severity,
+  score,
+});
+
 const DEFAULT_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export async function POST(request: Request) {
@@ -38,11 +47,12 @@ if (num) {
   }
 }
 
-    const category = text.includes("makan")
-      ? "food"
-      : text.includes("game")
-      ? "entertainment"
-      : "other";
+   const category =
+  text.includes("makan") || text.includes("minum")
+    ? "food"
+    : text.includes("game")
+    ? "entertainment"
+    : "other";
 
     const type = isIncome ? "income" : "expense";
 
