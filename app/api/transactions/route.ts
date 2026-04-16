@@ -24,7 +24,19 @@ export async function POST(request: Request) {
     const isIncome = text.includes("gaji") || text.includes("income");
 
     const amountMatch = text.match(/\d+/);
-    const amount = amountMatch ? parseInt(amountMatch[0]) * 1000 : 0;
+    let amount = 0;
+
+const num = text.match(/\d+/)?.[0];
+
+if (num) {
+  amount = parseInt(num);
+
+  if (text.includes("jt") || text.includes("juta")) {
+    amount *= 1_000_000;
+  } else if (text.includes("k") || text.includes("rb")) {
+    amount *= 1_000;
+  }
+}
 
     const category = text.includes("makan")
       ? "food"
