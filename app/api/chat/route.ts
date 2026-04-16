@@ -14,56 +14,72 @@ const supabase = createClient(
 const DEFAULT_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export async function POST(request: Request) {
-
   try {
     const body = await request.json();
+    const text = body.text.toLowerCase();
 
-   const text = body.text.toLowerCase();
+    const isTransaction = /\d/.test(text);
 
-const isTransaction = /\d/.test(text);
+    console.log("USER TEXT:", text);
+    console.log("IS TRANSACTION:", isTransaction);
 
-console.log("USER TEXT:", text);
-console.log("IS TRANSACTION:", isTransaction);
+    // =========================
+    // 💬 CHAT MODE
+    // =========================
+    if (!isTransaction) {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content:
+              "Lu asisten keuangan santai. Ngobrol casual, pake bahasa Indonesia santai.",
+          },
+          {
+            role: "user",
+            content: body.text,
+          },
+        ],
+      });
 
-if (!isTransaction) {
-  // =========================
-  // 💬 CHAT MODE
-  // =========================
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: body.text },
-    ],
-  });
+      const aiReply =
+        completion.choices?.[0]?.message?.content ||
+        "Ngomong aja santai, gw dengerin 😄";
 
-  const aiReply =
-    completion.choices?.[0]?.message?.content ||
-    "Ngomong aja santai, gw dengerin 😄";
+      return NextResponse.json({
+        insight: null,
+        parsed: null,
+        reply: aiReply,
+      });
+    }
 
-  return NextResponse.json({
-    insight: null,
-    parsed: null,
-    reply: aiReply,
-  });
+    // =========================
+    // 💰 TRANSACTION MODE
+    // =========================
+    const res = await fetch(
+      `${new URL(request.url).origin}/api/transactions`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
 
-// =========================
-// 💰 TRANSACTION MODE
-// =========================
+    const data = await res.json();
 
-} else { const res = await fetch(`${new URL(request.url).origin}/api/transactions`, {
-  method: "POST",
-  headers: { "content-type": "application/json" },
-  body: JSON.stringify(body),
-});
+    return NextResponse.json({
+      insight: data.insight,
+      parsed: data.parsed,
+      reply: data.reply || "Transaksi dicatat 👍",
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Internal server error", detail: String(err) },
+      { status: 500 }
+    );
+  }
+}
 
-const data = await res.json();
-
-return NextResponse.json({
-  insight: data.insight,
-  parsed: data.parsed,
-  reply: data.reply || "Transaksi dicatat 👍",
-});
     // =========================
     // 🧠 AMBIL TRANSAKSI USER
     // =========================
