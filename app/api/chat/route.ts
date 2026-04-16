@@ -18,7 +18,15 @@ export async function POST(request: Request) {
     const body = await request.json();
     const text = body.text.toLowerCase();
 
-    const isTransaction = /\d/.test(text);
+    const isTransaction =
+  /\d/.test(text) &&
+  (
+    text.includes("makan") ||
+    text.includes("beli") ||
+    text.includes("gaji") ||
+    text.includes("topup") ||
+    text.includes("bayar")
+  );
 
     console.log("USER TEXT:", text);
     console.log("IS TRANSACTION:", isTransaction);
