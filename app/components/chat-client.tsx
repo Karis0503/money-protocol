@@ -289,10 +289,11 @@ color: "#00c6ff",
       <p>{review.insightSummary}</p>
     </div>
 
-{insight?.warnings?.map((w: string, i: number) => (
-  <p key={i} style={{ color: "#ff4d4f" }}>
-    {w}
-  </p>
+{Array.isArray(insight?.warnings) &&
+  insight.warnings.map((w: string, i: number) => (
+    <p key={i} style={{ color: "#ff4d4f" }}>
+      {w}
+    </p>
 ))}
 
    {insight?.allocationUsed && insight?.allocationLimit && (
