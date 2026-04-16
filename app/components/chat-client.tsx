@@ -16,7 +16,6 @@ export function ChatClient() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [actions, setActions] = useState<any[]>([]);
   const [insight, setInsight] = useState<any>(null); // 🔥 TAMBAHAN PENTING
   const [review, setReview] = useState<any>(null);
   const [mode, setMode] = useState("relaxed");
@@ -24,18 +23,6 @@ export function ChatClient() {
   // =========================
   // 🔄 FETCH ACTIONS
   // =========================
-  useEffect(() => {
-    const fetchActions = async () => {
-      const res = await fetch("/api/actions");
-      const data = await res.json();
-      setActions(data);
-    };
-
-    fetchActions();
-    const interval = setInterval(fetchActions, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
   
  const fetchHistory = async () => {
   const res = await fetch("/api/history");
@@ -69,9 +56,8 @@ useEffect(() => {
   // =========================
   // 🚫 BLOCK CHECK
   // =========================
-  const isBlocked =
-    insight?.shouldBlock && actions.length > 0;
-
+  const isBlocked = insight?.severity === "high";
+  
   // =========================
   // 📤 SUBMIT
   // =========================
@@ -183,20 +169,7 @@ color: "#00c6ff",
       {/* ========================= */}
       {/* 🚫 WARNING */}
       {/* ========================= */}
-      {isBlocked && (
-        <div
-          style={{
-            background: "#ff4d4f",
-            color: "white",
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "10px"
-          }}
-        >
-          🚫 AI is restricting actions: {actions[0].command}
-        </div>
-      )}
-
+  
       {/* ========================= */}
       {/* 🔥 AI INSIGHT (FIXED) */}
       {/* ========================= */}
