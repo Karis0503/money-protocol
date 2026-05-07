@@ -30,4 +30,12 @@ Production-ready starter for a **Personal Finance Operating System** built with 
 
 ## Daily automation
 
+## Project Status
+This project is currently under active development.
+## Roadmap
+- Improve documentation
+- Add screenshots
+- Add setup instructions
+- Prepare first public demo
+
 Schedule POST `/api/cron/daily` and pass `x-cron-secret` header.
