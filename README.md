@@ -21,12 +21,19 @@ Production-ready starter for a **Personal Finance Operating System** built with 
 4. Warning agent summarizes critical alerts.
 5. Orchestrator stores outputs, logs inter-agent messages, and writes memory.
 
-## Run
+## Installation
 
-1. Copy `.env.example` to `.env.local`.
-2. Fill credentials.
-3. `npm install`
-4. `npm run dev`
+Make sure Node.js and npm are installed on your machine.
+1. Clone this repository.
+2. Copy `.env.example` to `.env.local`.
+3. Fill in the required Supabase credentials.
+4. Install dependencies:
+bash
+npm install
+6. Start the development server:
+npm run dev
+
+The app should now be available at http://localhost:3000.
 
 ## Daily Automation
 
