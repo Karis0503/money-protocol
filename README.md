@@ -38,4 +38,9 @@ This project is currently under active development.
 - Add setup instructions
 - Prepare first public demo
 
+## Features
+- Personal finance tracking
+- Project documentation
+- Roadmap for future improvements
+
 Schedule POST `/api/cron/daily` and pass `x-cron-secret` header.
